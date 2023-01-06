@@ -1,3 +1,3 @@
 export const Dashboard = () => <h2>
-    Dashboard
+    Results
 </h2>

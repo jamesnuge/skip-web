@@ -25,7 +25,7 @@ const App = () => {
       <h1>Application</h1>
       <BrowserRouter>
         <Switch>
-          <Route path="/dashboard">
+          <Route path="/results">
             <Dashboard />
           </Route>
           <Route path="/preferences">
