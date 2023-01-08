@@ -3,11 +3,11 @@ import './Login.css';
 import { loginApi, LoginRequest, LoginResponse } from './loginApi';
 
 export interface LoginProps {
-    onLogin: (id: string) => void
+  onLogin: (id: string) => void
 }
 
 export const Login = ({ onLogin }: LoginProps) => {
-  const {handleSubmit, register} = useForm();
+  const { handleSubmit, register } = useForm();
   const tryLogin = async (value: unknown) => {
     if (isLoginRequest(value)) {
       const credential: LoginResponse = await loginApi.login(value) as LoginResponse;
@@ -15,28 +15,32 @@ export const Login = ({ onLogin }: LoginProps) => {
     }
   };
   return (
-    <div className="login-wrapper">
+    <>
       <h1>Please log in</h1>
       <form onSubmit={handleSubmit(tryLogin)}>
-        <label>
-          <p>Email</p>
-          <input type="text" {...register("email", {required: true})}/>
-        </label>
-        <label>
-          <p>Password</p>
-          <input type="password" {...register("password", {required: true})}/>
-        </label>
+        <div className='form-group'>
+          <label>
+            <p>Email</p>
+          </label>
+          <input className='form-control' type="text" {...register("email", { required: true })} />
+        </div>
+        <div className='form-group'>
+          <label>
+            <p>Password</p>
+          </label>
+          <input type="password" {...register("password", { required: true })} />
+        </div>
         <div>
           <button type="submit">Submit</button>
         </div>
       </form>
-    </div>
+    </>
   );
 };
 
 function isLoginRequest(value: unknown): value is LoginRequest {
-    return typeof value === 'object' &&
-        value !== null &&
-        "email" in value &&
-        "password" in value;
+  return typeof value === 'object' &&
+    value !== null &&
+    "email" in value &&
+    "password" in value;
 }
