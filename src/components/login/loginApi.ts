@@ -22,7 +22,7 @@ export const loginApi = {
 
 var serverUrl
 
-const getServerUrl = () => {
+export const getServerUrl = () => {
     console.log(process.env)
     console.log(`server env variable is: ${process.env.REACT_APP_SERVER_URL}`)
     if (process.env.REACT_APP_SERVER_URL) {

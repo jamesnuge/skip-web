@@ -1,9 +1,10 @@
 import { fetchTokenFromStorage } from "../../App";
+import { getServerUrl } from "../login/loginApi";
 import { RaceRequest } from "../query/QueryRaceResults";
 
 export const resultApi = {
     getAll: async () => {
-        const response = await fetch('http://localhost:3000/api/results/all', {
+        const response = await fetch(`http://${getServerUrl()}/api/results/all`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -13,7 +14,7 @@ export const resultApi = {
         return await response.json()
     },
     queryRaceResult: async ({temperature, humidity, trackTemperature, trackmeter}: RaceRequest) => {
-        const response = await fetch(`http://localhost:3000/api/results/match?temperature=${temperature}&humidity=${humidity}&trackmeter=${trackmeter}&trackTemperature=${trackTemperature}`, {
+        const response = await fetch(`http://${getServerUrl()}/api/results/match?temperature=${temperature}&humidity=${humidity}&trackmeter=${trackmeter}&trackTemperature=${trackTemperature}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
