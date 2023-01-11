@@ -24,9 +24,9 @@ var serverUrl
 
 const getServerUrl = () => {
     console.log(process.env)
-    console.log(`server env variable is: ${process.env.SKIP_DATA_SERVER_URL}`)
-    if (process.env.SKIP_DATA_SERVER_URL) {
-        return process.env.SKIP_DATA_SERVER_URL
+    console.log(`server env variable is: ${process.env.REACT_APP_SERVER_URL}`)
+    if (process.env.REACT_APP_SERVER_URL) {
+        return process.env.REACT_APP_SERVER_URL
     } else {
         return 'localhost:3000'
     }
