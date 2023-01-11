@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { Dashboard } from './components/results/Results';
 import { Login } from './components/login/Login';
-import { Nav, Navbar } from 'react-bootstrap';
+import { Button, Nav, Navbar } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import { QueryRaceResults } from './components/query/QueryRaceResults';
@@ -15,9 +15,17 @@ const storeToken = (token: string) => {
   localStorage.setItem('authToken', token);
 }
 
+const deleteToken = () => {
+  localStorage.removeItem('authToken')
+}
+
 const App = () => {
   const storedToken = fetchTokenFromStorage();
   const [token, setToken] = useState<string>(storedToken);
+  const logout = () => {
+    deleteToken();
+    window.location.reload();
+  }
   if (token === '') {
     return <Login onLogin={(token) => {
       setToken(token);
@@ -35,6 +43,11 @@ const App = () => {
           <Nav.Link href="/results">All Results</Nav.Link>
           <Nav.Link href="/query">Search Results</Nav.Link>
         </Nav>
+        <Nav className='ml-auto'>
+          <Nav.Item>
+            <a onClick={() => logout()}className='nav-link ml-auto'>Logout</a>
+          </Nav.Item>
+        </Nav>
       </Container>
     </Navbar>
     <div className="wrapper">
@@ -47,9 +60,7 @@ const App = () => {
             <QueryRaceResults />
           </Route>
           <Route path="/">
-              <Container>
-                <h2>Skip Data Webapp</h2>
-              </Container>
+            <QueryRaceResults />
           </Route>
         </Switch>
       </BrowserRouter>
