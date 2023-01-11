@@ -6,10 +6,9 @@ export interface LoginResponse {
     jwt: string
 }
 
-const serverUrl = process.env.SKIP_DATA_SERVER_URL || 'localhost:3000'
-
 export const loginApi = {
     login: async (request: LoginRequest) => {
+        const serverUrl = getServerUrl();
         const response = await fetch(`http://${serverUrl}/api/auth/login`, {
             method: 'POST',
             headers: {
@@ -18,5 +17,17 @@ export const loginApi = {
             body: JSON.stringify(request)
         });
         return await response.json(); 
+    }
+}
+
+var serverUrl
+
+const getServerUrl = () => {
+    console.log(process.env)
+    console.log(`server env variable is: ${process.env.SKIP_DATA_SERVER_URL}`)
+    if (process.env.SKIP_DATA_SERVER_URL) {
+        return process.env.SKIP_DATA_SERVER_URL
+    } else {
+        return 'localhost:3000'
     }
 }
