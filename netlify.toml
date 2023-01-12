@@ -1,5 +1,5 @@
 [[redirects]]
-  from = "/api"
-  to = "http://170.64.168.65:8080/api"
+  from = "/api/*"
+  to = "http://170.64.168.65:8080/api/:splat"
   status = 200
   force = true # COMMENT: ensure that we always redirect
