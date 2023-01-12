@@ -3,9 +3,13 @@
   to = "http://170.64.168.65:8080/api/:splat"
   status = 200
   force = true # COMMENT: ensure that we always redirect
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
-  [[headers]]
-  # Define which paths this specific [[headers]] block will cover.
-  for = "/*"
-    [headers.values]
-    Access-Control-Allow-Origin = "*"
+[[headers]]
+# Define which paths this specific [[headers]] block will cover.
+for = "/*"
+  [headers.values]
+  Access-Control-Allow-Origin = "*"

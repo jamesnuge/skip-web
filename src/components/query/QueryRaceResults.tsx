@@ -80,8 +80,8 @@ export const QueryRaceResults = () => {
                             <td scope="col" className='text-start'>{altitude}ft</td>
                             <td scope="col" className='text-start'>{sixtyFeetTime}s, {threeThirtyFeetTime}s,  {sixSixtyFeetTime}s,  {quarterMileTime}s</td>
                             <td scope="col" className='text-start'>{sixSixtyFeetSpeed}mph {quarterMileSpeed}mph</td>
-                            <td scope="col" className='text-start'>{trackmeter}</td>
-                            <td scope="col" className='text-start'>{trackTemperature}°C</td>
+                            <td scope="col" className='text-start'>{trackmeter} {getDiffElement(trackmeter, request.trackmeter)}</td>
+                            <td scope="col" className='text-start'>{trackTemperature}°C {getDiffElement(trackTemperature, request.trackTemperature)}</td>
                             <td scope="col" className='text-start'>{temperature}°C {getDiffElement(temperature, request.temperature)}</td>
                             <td scope="col" className='text-start'>{humidity}% <span className='text-danger'>(±{Math.abs(humidity - request.humidity)})</span></td>
                             <td scope="col" className='text-start'>{rank}</td>

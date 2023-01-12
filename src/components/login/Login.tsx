@@ -15,28 +15,6 @@ export const Login = ({ onLogin }: LoginProps) => {
       onLogin(credential.jwt)
     }
   };
-  // return (
-  //   <>
-  //     <h1>Please log in</h1>
-  //     <form onSubmit={handleSubmit(tryLogin)}>
-  //       <div className='form-group'>
-  //         <label>
-  //           <p>Email</p>
-  //         </label>
-  //         <input className='form-control' type="text" {...register("email", { required: true })} />
-  //       </div>
-  //       <div className='form-group'>
-  //         <label>
-  //           <p>Password</p>
-  //         </label>
-  //         <input type="password" {...register("password", { required: true })} />
-  //       </div>
-  //       <div>
-  //         <button type="submit">Submit</button>
-  //       </div>
-  //     </form>
-  //   </>
-  // );
   return <div className="wrapper">
     <Row>
       <Col/>
