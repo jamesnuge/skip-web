@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { resultApi } from '../results/resultApi'
 import './queryRaceResults.css'
-import { Button, Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 
 export const QueryRaceResults = () => {
     const [data, setData] = useState([]);

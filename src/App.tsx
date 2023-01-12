@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { Dashboard } from './components/results/Results';
+import { AddResult } from './components/results/add/AddResults';
 import { Login } from './components/login/Login';
 import { Button, Nav, Navbar } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
@@ -42,6 +43,7 @@ const App = () => {
           <Nav.Link href="/">Home</Nav.Link>
           <Nav.Link href="/results">All Results</Nav.Link>
           <Nav.Link href="/query">Search Results</Nav.Link>
+          <Nav.Link href="/add">Input Result</Nav.Link>
         </Nav>
         <Nav className='ml-auto'>
           <Nav.Item>
@@ -58,6 +60,9 @@ const App = () => {
           </Route>
           <Route path="/query">
             <QueryRaceResults />
+          </Route>
+          <Route path="/add">
+            <AddResult />
           </Route>
           <Route path="/">
             <QueryRaceResults />
