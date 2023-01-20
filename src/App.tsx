@@ -8,6 +8,7 @@ import { Button, Nav, Navbar } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import { QueryRaceResults } from './components/query/QueryRaceResults';
+import { LocationList } from './components/location/LocationList';
 
 
 export const fetchTokenFromStorage = () => localStorage.getItem('authToken') || '';
@@ -44,6 +45,7 @@ const App = () => {
           <Nav.Link href="/results">All Results</Nav.Link>
           <Nav.Link href="/query">Search Results</Nav.Link>
           <Nav.Link href="/add">Input Result</Nav.Link>
+          <Nav.Link href="/locations">Locations</Nav.Link>
         </Nav>
         <Nav className='ml-auto'>
           <Nav.Item>
@@ -55,6 +57,9 @@ const App = () => {
     <div className="wrapper">
       <BrowserRouter>
         <Switch>
+          <Route path="/locations">
+            <LocationList/>
+          </Route>
           <Route path="/results">
             <Dashboard />
           </Route>
