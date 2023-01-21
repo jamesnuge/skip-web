@@ -38,21 +38,20 @@ export const NewLocation = () => {
         <ToastContainer className="p-3" position='top-end'>
             <Toast bg="success" show={successMessage != undefined} onClose={() => setSuccessMessage(undefined)}>
                 <Toast.Header>
-                    <strong className="me-auto">Result added</strong>
+                    <strong className="me-auto">Location added</strong>
                 </Toast.Header>
-                <Toast.Body>Successfully saved result</Toast.Body>
+                <Toast.Body>Successfully saved location</Toast.Body>
             </Toast>
             <Toast bg="error" show={errorMessage != undefined} onClose={() => setErrorMessage(undefined)}>
                 <Toast.Header>
-                    <strong className="me-auto">Failed to add result</strong>
+                    <strong className="me-auto">Failed to add location</strong>
                 </Toast.Header>
-                <Toast.Body>Unable to save result. Please check all values are present and correct</Toast.Body>
+                <Toast.Body>Unable to save location. Please check all values are present and correct</Toast.Body>
             </Toast>
         </ToastContainer>
         <h2>New location</h2>
         <form onSubmit={handleSubmit(createLocation)}>
             <Card>
-                <Card.Header>Location</Card.Header>
                 <Card.Body>
                     <Row>
                         <Col xs={1}/>

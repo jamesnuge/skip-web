@@ -14,7 +14,7 @@ export const LocationList = () => {
     const history = useHistory();
 
     useEffect(() => {
-        handleFetchData()
+        handleFetchData();
     }, []);
 
     return <div>

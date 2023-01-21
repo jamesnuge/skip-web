@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { Button, Card, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap"
 import { useForm } from "react-hook-form"
+import { useHistory } from "react-router-dom"
 import { ChassisSetup } from "./Chassis"
 import { chassisApi } from "./chassisApi"
 
@@ -10,10 +11,12 @@ export const NewChassis = () => {
     const { register, handleSubmit } = useForm();
     const [errorMessage, setErrorMessage] = useState<String | undefined>(undefined)
     const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined)
+    const history = useHistory();
     const createLocation = (value: object) => {
         chassisApi.create(value as ChassisSetup).then(() => {
             setErrorMessage(undefined);
             setSuccessMessage(`Successfully saved location`);
+            history.push("/chassis/all")
         }, (err) => {
             setSuccessMessage(undefined);
             setErrorMessage("Unable to save location, ensure all fields are present and correct");

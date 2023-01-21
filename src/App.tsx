@@ -47,7 +47,7 @@ const App = () => {
             <Nav.Link href="/">Home</Nav.Link>
             <NavDropdown title="Results" id="results-dropdown">
               <NavDropdown.Item href="/results">All</NavDropdown.Item>
-              <NavDropdown.Item href="/query">Query</NavDropdown.Item>
+              <NavDropdown.Item href="/query">Ranked search</NavDropdown.Item>
               <NavDropdown.Item href="/add">Add</NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Locations" id="locations-dropdown">
