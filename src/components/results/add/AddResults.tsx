@@ -4,24 +4,31 @@ import { ToastContainer, Toast, Card, Row, Col, Form } from 'react-bootstrap'
 import { fetchTokenFromStorage } from "../../../App";
 import { locationApi } from "../../location/locationApi";
 import { Location } from "../../location/Location";
+import { ChassisSetup } from "../../chassis/Chassis";
+import { chassisApi } from "../../chassis/chassisApi";
 
 export const AddResult = () => {
-    const [errorMessage, setErrorMessage] = useState<String | undefined>(undefined)
-    const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined)
-    const [locations, setLocations] = useState<Location[]>([])
+    const [errorMessage, setErrorMessage] = useState<String | undefined>(undefined);
+    const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined);
+    const [locations, setLocations] = useState<Location[]>([]);
+    const [chassisSetups, setChassisSetups] = useState<ChassisSetup[]>([]);
     const { handleSubmit, register } = useForm();
-    const handleFetchLocations = async () => {
+    const loadLocationsAndChassisSetups = async () => {
         const locations = await locationApi.getAll();
         setLocations(locations);
+        const chassisSetups = await chassisApi.getAll();
+        setChassisSetups(chassisSetups);
     }
     useEffect(() => {
-        handleFetchLocations();
+        loadLocationsAndChassisSetups();
     }, []);
-    const printResult = (value: object) => {
+    const printResult = (value: any) => {
         const valueWithAltitude = {
             ...value,
-            altitude: locations[(value as any).location]
+            location: JSON.parse(value.location),
+            chassisSetup: JSON.parse(value.chassisSetup),
         }
+        console.log(valueWithAltitude)
         fetch(`/api/results/save`, {
             method: 'PUT',
             headers: {
@@ -67,7 +74,14 @@ export const AddResult = () => {
                                 <Form.Select id="location" aria-label="Default select example" {...register("location", { required: true })}>
                                     <option>Open this select menu</option>
                                     {locations.map((key: Location) => {
-                                        return <option key={key.name} value={key as any}>{key.name}</option>
+                                        return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
+                                    })}
+                                </Form.Select>
+                                <label htmlFor="chassisSetup" className='text-start'>Chassis Setup:</label>
+                                <Form.Select id="chassisSetup" aria-label="Default select example" {...register("chassisSetup", { required: true })}>
+                                    <option>Select chassis setup</option>
+                                    {chassisSetups.map((key: ChassisSetup) => {
+                                        return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
                                     })}
                                 </Form.Select>
 

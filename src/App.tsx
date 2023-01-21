@@ -4,12 +4,14 @@ import './App.css';
 import { Dashboard } from './components/results/Results';
 import { AddResult } from './components/results/add/AddResults';
 import { Login } from './components/login/Login';
-import { Button, Nav, Navbar } from 'react-bootstrap';
+import { Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import { QueryRaceResults } from './components/query/QueryRaceResults';
 import { LocationList } from './components/location/LocationList';
 import { NewLocation } from './components/location/NewLocation';
+import { ChassisSetupList } from './components/chassis/ChassisList';
+import { NewChassis } from './components/chassis/AddChassis';
 
 
 export const fetchTokenFromStorage = () => localStorage.getItem('authToken') || '';
@@ -43,11 +45,19 @@ const App = () => {
           </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/results">All Results</Nav.Link>
-            <Nav.Link href="/query">Search Results</Nav.Link>
-            <Nav.Link href="/add">Input Result</Nav.Link>
-            <Nav.Link href="/locations">Locations</Nav.Link>
-            <Nav.Link href="/test">New Location</Nav.Link>
+            <NavDropdown title="Results" id="results-dropdown">
+              <NavDropdown.Item href="/results">All</NavDropdown.Item>
+              <NavDropdown.Item href="/query">Query</NavDropdown.Item>
+              <NavDropdown.Item href="/add">Add</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Locations" id="locations-dropdown">
+              <NavDropdown.Item href="/location/all">View all</NavDropdown.Item>
+              <NavDropdown.Item href="/locations/create">Add</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Chassis" id="chassis-dropdown">
+              <NavDropdown.Item href="/chassis/all">View all</NavDropdown.Item>
+              <NavDropdown.Item href="/chassis/create">Add</NavDropdown.Item>
+            </NavDropdown>
           </Nav>
           <Nav className='ml-auto'>
             <Nav.Item>
@@ -61,8 +71,14 @@ const App = () => {
           <Route path="/location/create">
             <NewLocation />
           </Route>
-          <Route path="/locations">
+          <Route path="/location/all">
             <LocationList />
+          </Route>
+          <Route path="/chassis/all">
+            <ChassisSetupList />
+          </Route>
+          <Route path="/chassis/create">
+            <NewChassis />
           </Route>
           <Route path="/results">
             <Dashboard />
