@@ -1,11 +1,30 @@
 import { useState, useEffect } from 'react'
 import { resultApi } from './resultApi'
+import { Location } from '../location/Location'
+import { Button } from 'react-bootstrap'
+import { useHistory } from 'react-router-dom'
+
+export interface Result {
+    datetime: string,
+    location: Location,
+    sixtyFeetTime: number,
+    threeThirtyFeetTime: number,
+    sixSixtyFeetTime: number,
+    quarterMileTime: number,
+    sixSixtyFeetSpeed: number,
+    quarterMileSpeed: number,
+    trackmeter: number,
+    temperature: number,
+    trackTemperature: number,
+    humidity: number,
+    rank: number
+}
 
 export const Dashboard = () => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState<Result[]>([])
+    const {push} = useHistory();
     const handleFetchData = async () => {
         const response = await resultApi.getAll()
-        console.log(response) 
         setData(response)
     }
     useEffect(() => {
@@ -13,6 +32,7 @@ export const Dashboard = () => {
     }, [])
     return <div>
         <h2>All Race Results</h2>
+        <Button onClick={() => push('/add')}>Add result + </Button>
         <table className="table table-striped tableFixHead thead-light">
             <thead className='thead-dark'>
                 <tr>
@@ -28,10 +48,10 @@ export const Dashboard = () => {
                 </tr>
             </thead>
             <tbody>
-                {data.map(({ datetime, altitude, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity}) => <tr>
+                {data.map(({ datetime, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity}) => <tr>
                     <td scope="col" className='text-start'>{datetime}</td>
-                    <td scope="col" className='text-start'>{location}</td>
-                    <td scope="col" className='text-start'>{altitude}ft</td>
+                    <td scope="col" className='text-start'>{location.name}</td>
+                    <td scope="col" className='text-start'>{location.altitude}ft</td>
                     <td scope="col" className='text-start'>{sixtyFeetTime}s, {threeThirtyFeetTime}s,  {sixSixtyFeetTime}s,  {quarterMileTime}s</td>
                     <td scope="col" className='text-start'>{sixSixtyFeetSpeed}mph {quarterMileSpeed}mph</td>
                     <td scope="col" className='text-start'>{trackmeter}</td>

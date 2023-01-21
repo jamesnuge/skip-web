@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form'
 import { resultApi } from '../results/resultApi'
 import './queryRaceResults.css'
 import { Container, Row, Col } from 'react-bootstrap'
+import { Result } from '../results/Results'
 
 export const QueryRaceResults = () => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<Result[]>([]);
     const [request, setRequest] = useState<RaceRequest | undefined>(undefined);
     console.log(data)
     const { handleSubmit, register } = useForm();
@@ -74,10 +75,10 @@ export const QueryRaceResults = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map(({ datetime, altitude, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr>
+                        {data.map(({ datetime, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr>
                             <td scope="col" className='text-start'>{datetime}</td>
-                            <td scope="col" className='text-start'>{location}</td>
-                            <td scope="col" className='text-start'>{altitude}ft</td>
+                            <td scope="col" className='text-start'>{location.name}</td>
+                            <td scope="col" className='text-start'>{location.altitude}</td>
                             <td scope="col" className='text-start'>{sixtyFeetTime}s, {threeThirtyFeetTime}s,  {sixSixtyFeetTime}s,  {quarterMileTime}s</td>
                             <td scope="col" className='text-start'>{sixSixtyFeetSpeed}mph {quarterMileSpeed}mph</td>
                             <td scope="col" className='text-start'>{trackmeter} {getDiffElement(trackmeter, request.trackmeter)}</td>

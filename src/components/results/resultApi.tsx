@@ -1,5 +1,6 @@
 import { fetchTokenFromStorage } from "../../App";
 import { RaceRequest } from "../query/QueryRaceResults";
+import { Result } from "./Results";
 
 export const resultApi = {
     getAll: async () => {
@@ -10,9 +11,9 @@ export const resultApi = {
                 'Authorization': 'Bearer ' + fetchTokenFromStorage()
             },
         });
-        return await response.json()
+        return await response.json() as Result[]
     },
-    queryRaceResult: async ({temperature, humidity, trackTemperature, trackmeter}: RaceRequest) => {
+    queryRaceResult: async ({temperature, humidity, trackTemperature, trackmeter}: RaceRequest): Promise<Result[]> => {
         const response = await fetch(`/api/results/match?temperature=${temperature}&humidity=${humidity}&trackmeter=${trackmeter}&trackTemperature=${trackTemperature}`, {
             method: 'GET',
             headers: {
@@ -20,7 +21,7 @@ export const resultApi = {
                 'Authorization': 'Bearer ' + fetchTokenFromStorage()
             }
         });
-        return await response.json()
+        return await response.json() as Result[]
     }
     
 }
