@@ -35,8 +35,7 @@ export const Dashboard = () => {
         handleFetchData()
     }, [])
     return <div>
-        <h2>All Race Results</h2>
-        <Button onClick={() => push('/add')}>Add result + </Button>
+        <h2>Results</h2>
         <RaceResultListDisplay results={data}/>
     </div>
 }
