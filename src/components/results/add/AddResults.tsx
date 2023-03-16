@@ -4,20 +4,20 @@ import { ToastContainer, Toast, Card, Row, Col, Form } from 'react-bootstrap'
 import { fetchTokenFromStorage } from "../../../App";
 import { locationApi } from "../../location/locationApi";
 import { Location } from "../../location/Location";
-import { ChassisSetup } from "../../chassis/Chassis";
-import { chassisApi } from "../../chassis/chassisApi";
+import {VehicleSummary} from "../../vehicle/Vehicle";
+import {vehicleApi} from "../../vehicle/vehicleApi";
 
 export const AddResult = () => {
     const [errorMessage, setErrorMessage] = useState<String | undefined>(undefined);
     const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined);
     const [locations, setLocations] = useState<Location[]>([]);
-    const [chassisSetups, setChassisSetups] = useState<ChassisSetup[]>([]);
+    const [vehicles, setVehicles] = useState<VehicleSummary[]>([]);
     const { handleSubmit, register } = useForm();
     const loadLocationsAndChassisSetups = async () => {
         const locations = await locationApi.getAll();
         setLocations(locations);
-        const chassisSetups = await chassisApi.getAll();
-        setChassisSetups(chassisSetups);
+        const vehicleSummaries = await vehicleApi.getAllSummaries();
+        setVehicles(vehicleSummaries);
     }
     useEffect(() => {
         loadLocationsAndChassisSetups();
@@ -26,7 +26,6 @@ export const AddResult = () => {
         const valueWithAltitude = {
             ...value,
             location: JSON.parse(value.location),
-            chassisSetup: JSON.parse(value.chassisSetup),
         }
         console.log(valueWithAltitude)
         fetch(`/api/results/save`, {
@@ -38,22 +37,23 @@ export const AddResult = () => {
             // TODO: Fix typing here
             body: JSON.stringify(valueWithAltitude)
         }).then(() => {
-            setErrorMessage(undefined)
-            setSuccessMessage(`Successfully saved result`)
+            setErrorMessage(undefined);
+            setSuccessMessage(`Successfully saved result`);
         }, (err) => {
-            setSuccessMessage(undefined)
-            setErrorMessage("Unable to save result, ensure all fields are present and correct")
+            console.error(err);
+            setSuccessMessage(undefined);
+            setErrorMessage("Unable to save result, ensure all fields are present and correct");
         })
     }
     return <>
             <ToastContainer className="p-3" position='top-end'>
-                <Toast bg="success" show={successMessage != undefined} onClose={() => setSuccessMessage(undefined)}>
+                <Toast bg="success" show={successMessage !== undefined} onClose={() => setSuccessMessage(undefined)}>
                     <Toast.Header>
                         <strong className="me-auto">Result added</strong>
                     </Toast.Header>
                     <Toast.Body>Successfully saved result</Toast.Body>
                 </Toast>
-                <Toast bg="error" show={errorMessage != undefined} onClose={() => setErrorMessage(undefined)}>
+                <Toast bg="error" show={errorMessage !== undefined} onClose={() => setErrorMessage(undefined)}>
                     <Toast.Header>
                         <strong className="me-auto">Failed to add result</strong>
                     </Toast.Header>
@@ -61,7 +61,7 @@ export const AddResult = () => {
                 </Toast>
             </ToastContainer>
         <h2>Add Result</h2>
-        {locations.length == 0 ? <p>Loading...</p> :
+        {locations.length === 0 ? <p>Loading...</p> :
             <form onSubmit={handleSubmit(printResult)}>
                 <Row>
                     <Col>
@@ -77,14 +77,13 @@ export const AddResult = () => {
                                         return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
                                     })}
                                 </Form.Select>
-                                <label htmlFor="chassisSetup" className='text-start'>Chassis Setup:</label>
-                                <Form.Select id="chassisSetup" aria-label="Default select example" {...register("chassisSetup", { required: true })}>
-                                    <option>Select chassis setup</option>
-                                    {chassisSetups.map((key: ChassisSetup) => {
-                                        return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
+                                <label htmlFor="vehicle" className='text-start'>Vehicle:</label>
+                                <Form.Select id="vehicle" aria-label="Default select example" {...register("vehicleId", { required: true })}>
+                                    <option>Select Vehicle</option>
+                                    {vehicles.map((key: VehicleSummary) => {
+                                        return <option key={key.id} value={key.id}>{key.name}</option>
                                     })}
                                 </Form.Select>
-
                             </Card.Body>
                         </Card>
                     </Col>

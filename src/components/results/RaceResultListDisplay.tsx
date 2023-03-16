@@ -16,7 +16,7 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
                 <tr>
                     <th scope="col">Date</th>
                     <th scope="col">Location</th>
-                    <th scope="col">Chassis Setup</th>
+                    <th scope="col">Vehicle</th>
                     <th scope="col">Time<br /> (60", 330", 660", 1320")</th>
                     <th scope="col">Speed<br /> (660", 1320")</th>
                     <th scope="col">Trackmeter</th>
@@ -28,10 +28,12 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
             </thead>
             <tbody>
                 {results.length !== 0 &&
-                    results.map(({ id, datetime, chassisSetup, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr key={id}>
+                    results.map(({ id, datetime, vehicle, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr key={id}>
                         <td scope="col" className='text-start'>{datetime}</td>
-                        {generateLocationCell(location)}
-                        {generateChassisSetupCell(chassisSetup)}
+                        {/*{generateLocationCell(location)}*/}
+                        <td scope="col" className='text-start'>{location}</td>
+                        {/*{generateChassisSetupCell(vehicle.chassisSetup)}*/}
+                        <td scope="col" className='text-start'>{vehicle}</td>
                         <td scope="col" className='text-start'>{sixtyFeetTime}s, {threeThirtyFeetTime}s,  {sixSixtyFeetTime}s,  {quarterMileTime}s</td>
                         <td scope="col" className='text-start'>{sixSixtyFeetSpeed}mph {quarterMileSpeed}mph</td>
                         <td scope="col" className='text-start'>{trackmeter} {request && getDiffElement(trackmeter, request.trackmeter)}</td>

@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
 import { resultApi } from './resultApi'
 import { Location } from '../location/Location'
-import { Button } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import { ChassisSetup } from '../chassis/Chassis'
 import { RaceResultListDisplay } from './RaceResultListDisplay'
+import {Vehicle} from "../vehicle/Vehicle";
 
 export interface Result {
     id: number,
     datetime: string,
-    location: Location,
-    chassisSetup: ChassisSetup,
+    location: string,
+    vehicle: string,
     sixtyFeetTime: number,
     threeThirtyFeetTime: number,
     sixSixtyFeetTime: number,

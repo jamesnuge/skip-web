@@ -1,10 +1,9 @@
-
 import { fetchTokenFromStorage } from '../../App';
-import { ChassisSetup } from './Chassis';
+import {Vehicle, VehicleSummary} from './Vehicle';
 
-const baseUrl = '/api/vehicle/chassis'
+const baseUrl = '/api/vehicle';
 
-export const chassisApi = {
+export const vehicleApi = {
     getAll: async () => {
         const response = await fetch(`${baseUrl}/all`, {
             method: 'GET',
@@ -13,26 +12,36 @@ export const chassisApi = {
                 'Authorization': 'Bearer ' + fetchTokenFromStorage()
             },
         });
-        return await response.json()
+        return await response.json() as Vehicle[]
     },
-    update: async (chassis: ChassisSetup) => {
+    getAllSummaries: async () => {
+        const response = await fetch(`${baseUrl}/summary/all`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + fetchTokenFromStorage()
+            },
+        });
+        return await response.json() as VehicleSummary[]
+    },
+    update: async (vehicle: Vehicle) => {
         await fetch(`${baseUrl}/update`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + fetchTokenFromStorage()
             },
-            body: JSON.stringify(chassis)
+            body: JSON.stringify(vehicle)
         });
     },
-    create: async (chassis: ChassisSetup) => {
+    create: async (vehicle: Vehicle) => {
         await fetch(`${baseUrl}/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + fetchTokenFromStorage()
             },
-            body: JSON.stringify(chassis)
+            body: JSON.stringify(vehicle)
         });
     }
 }
