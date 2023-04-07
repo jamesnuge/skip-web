@@ -36,7 +36,7 @@ export const vehicleApi = {
     },
     create: async (vehicle: Vehicle) => {
         await fetch(`${baseUrl}/create`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + fetchTokenFromStorage()

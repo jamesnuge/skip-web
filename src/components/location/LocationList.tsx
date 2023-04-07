@@ -3,7 +3,6 @@ import { Button, Col, Row } from 'react-bootstrap'
 import { Location } from './Location'
 import { locationApi } from './locationApi'
 import { useHistory } from 'react-router'
-import { Link } from 'react-router-dom'
 
 export const LocationList = () => {
     const [data, setData] = useState<Location[]>([])

@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Button, Card, Col, Form, Row, Toast, ToastContainer } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { useHistory } from 'react-router-dom'
-import { Vehicle } from './Vehicle'
-import { vehicleApi } from './vehicleApi'
+import { Vehicle } from '../Vehicle'
+import { vehicleApi } from '../vehicleApi'
 
 
 export const NewVehicle = () => {
