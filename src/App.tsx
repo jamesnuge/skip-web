@@ -13,6 +13,8 @@ import {ChassisSetupList} from './components/chassis/ChassisList';
 import {NewChassis} from './components/chassis/AddChassis';
 import {NavBar} from "./components/navbar/NavBar";
 import {SideBar} from "./components/SideBar";
+import {NewVehicle} from "./components/vehicle/AddVehicle";
+import { VehicleListDisplay } from './components/vehicle/VehicleListDisplay';
 
 export const fetchTokenFromStorage = () => localStorage.getItem('authToken') || '';
 
@@ -51,6 +53,12 @@ const App = () => {
           </Route>
           <Route path="/chassis/create">
             <NewChassis />
+          </Route>
+          <Route path="/vehicle/all">
+            <VehicleListDisplay />
+          </Route>
+          <Route path="/vehicle/create">
+            <NewVehicle />
           </Route>
           <Route path="/results">
             <Dashboard />

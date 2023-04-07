@@ -14,7 +14,7 @@ export const NavBar = () => {
     return <Navbar bg='dark' variant='dark'>
         <Container>
             <Navbar.Brand>
-                Skip Data
+                Data Skip
             </Navbar.Brand>
             <Nav className="me-auto">
                 <Nav.Link href="/">Home</Nav.Link>
@@ -26,6 +26,10 @@ export const NavBar = () => {
                 <NavDropdown title="Locations" id="locations-dropdown">
                     <NavDropdown.Item href="/location/all">View all</NavDropdown.Item>
                     <NavDropdown.Item href="/locations/create">Add</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title="Vehicle" id="vehicle-dropdown">
+                    <NavDropdown.Item href="/vehicle/all">View all</NavDropdown.Item>
+                    <NavDropdown.Item href="/vehicle/create">Add</NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown title="Chassis" id="chassis-dropdown">
                     <NavDropdown.Item href="/chassis/all">View all</NavDropdown.Item>
