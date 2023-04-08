@@ -6,39 +6,47 @@ import { locationApi } from "../../location/locationApi";
 import { Location } from "../../location/Location";
 import {VehicleSummary} from "../../vehicle/Vehicle";
 import {vehicleApi} from "../../vehicle/vehicleApi";
+import { resultApi } from "../resultApi";
+import { useHistory } from "react-router-dom";
+import { startLineApi } from "../startLine/startLineApi";
 
 export const AddResult = () => {
     const [errorMessage, setErrorMessage] = useState<String | undefined>(undefined);
     const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined);
     const [locations, setLocations] = useState<Location[]>([]);
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([]);
-    const { handleSubmit, register } = useForm();
+    const { handleSubmit, register, watch, setValue } = useForm();
+    const { push } = useHistory()
     const loadLocationsAndChassisSetups = async () => {
         const locations = await locationApi.getAll();
         setLocations(locations);
         const vehicleSummaries = await vehicleApi.getAllSummaries();
         setVehicles(vehicleSummaries);
     }
+    const loadLatestStartLine = async () => {
+        if (watchVehicleId) {
+            const {launchRpm, boost} = await startLineApi.getVehiclesPreviousStartLine(watchVehicleId as number)
+            setValue("startLine.launchRpm", launchRpm)
+            setValue("startLine.boost", boost)
+        }
+    }
+    const watchVehicleId = watch("vehicleId")
     useEffect(() => {
         loadLocationsAndChassisSetups();
     }, []);
+    useEffect(() => {
+        loadLatestStartLine()
+    }, [watchVehicleId])
     const printResult = (value: any) => {
         const valueWithAltitude = {
             ...value,
             location: JSON.parse(value.location),
         }
         console.log(valueWithAltitude)
-        fetch(`/api/results/save`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + fetchTokenFromStorage()
-            },
-            // TODO: Fix typing here
-            body: JSON.stringify(valueWithAltitude)
-        }).then(() => {
+        resultApi.save(valueWithAltitude).then(() => {
             setErrorMessage(undefined);
             setSuccessMessage(`Successfully saved result`);
+            push('/results')
         }, (err) => {
             console.error(err);
             setSuccessMessage(undefined);
@@ -68,22 +76,42 @@ export const AddResult = () => {
                         <Card>
                             <Card.Header>Date and Location</Card.Header>
                             <Card.Body>
-                                <label htmlFor="date" className='text-start'>Date:</label>
-                                <Form.Control type="date" {...register("datetime", { required: true })} />
-                                <label htmlFor="location" className='text-start'>Location:</label>
-                                <Form.Select id="location" aria-label="Default select example" {...register("location", { required: true })}>
-                                    <option>Open this select menu</option>
-                                    {locations.map((key: Location) => {
-                                        return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
-                                    })}
-                                </Form.Select>
-                                <label htmlFor="vehicle" className='text-start'>Vehicle:</label>
-                                <Form.Select id="vehicle" aria-label="Default select example" {...register("vehicleId", { required: true })}>
-                                    <option>Select Vehicle</option>
-                                    {vehicles.map((key: VehicleSummary) => {
-                                        return <option key={key.id} value={key.id}>{key.name}</option>
-                                    })}
-                                </Form.Select>
+                                <Row>
+                                    <Col>
+                                        <label htmlFor="date" className='text-start'>Date:</label>
+                                        <Form.Control type="datetime-local" {...register("datetime", { required: true })} />
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <label htmlFor="location" className='text-start'>Location:</label>
+                                        <Form.Select id="location" aria-label="Default select example" {...register("location", { required: true })}>
+                                            <option>Open this select menu</option>
+                                            {locations.map((key: Location) => {
+                                                return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
+                                            })}
+                                        </Form.Select>
+                                    </Col>
+                                    <Col>
+                                        <label htmlFor="vehicle" className='text-start'>Vehicle:</label>
+                                        <Form.Select id="vehicle" aria-label="Default select example" {...register("vehicleId", { required: true })}>
+                                            <option>Select Vehicle</option>
+                                            {vehicles.map((key: VehicleSummary) => {
+                                                return <option key={key.id} value={key.id}>{key.name}</option>
+                                            })}
+                                        </Form.Select>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <label htmlFor="launchRpm" className='text-start'>Launch RPM:</label>
+                                        <input id="" className='form-control' type="number" {...register("startLine.launchRpm", { required: true })} placeholder="Launch RPM" />
+                                    </Col>
+                                    <Col>
+                                        <label htmlFor="boost" className='text-start'>Boost:</label>
+                                        <input id="" className='form-control' type="number" {...register("startLine.boost", { required: true })} placeholder="Launch RPM" />
+                                    </Col>
+                                </Row>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -151,5 +179,5 @@ export const AddResult = () => {
                 <button className='btn btn-primary' type='submit'>Add result</button>
             </form>
         }
-        </>;
+    </>;
 }

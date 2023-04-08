@@ -43,5 +43,15 @@ export const vehicleApi = {
             },
             body: JSON.stringify(vehicle)
         });
+    },
+    get: async (id: number) => {
+        const response = await fetch(`${baseUrl}/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + fetchTokenFromStorage()
+            }
+        })
+        return await response.json() as Vehicle 
     }
 }

@@ -22,6 +22,18 @@ export const resultApi = {
             }
         });
         return await response.json() as Result[]
+    },
+    // TODO: Fix typing here
+    save: async (result: any): Promise<Response> => {
+        return fetch(`/api/results/save`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + fetchTokenFromStorage()
+            },
+            // TODO: Fix typing here
+            body: JSON.stringify(result)
+        })
     }
     
 }

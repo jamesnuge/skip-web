@@ -12,12 +12,13 @@ export const VehicleListDisplay = () => {
         const response = await vehicleApi.getAllSummaries()
         setVehicles(response)
     }
+    const {push} = useHistory()
 
     useEffect(() => {
         handleFetchData();
     }, []);
 
-    const openVehicle = (id: Number) => () => console.log('Navigating to vehicle %d', id)
+    const openVehicle = (id: Number) => () => push(`/vehicle/${id}`)
 
     return <div>
         <Row>
