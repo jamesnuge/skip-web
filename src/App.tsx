@@ -11,9 +11,7 @@ import {LocationList} from './components/location/LocationList';
 import {NewLocation} from './components/location/NewLocation';
 import {ChassisSetupList} from './components/chassis/ChassisList';
 import {NewChassis} from './components/chassis/AddChassis';
-import {NavBar} from "./components/navbar/NavBar";
-import {SideBar} from "./components/SideBar";
-import {NewVehicle} from "./components/vehicle/add/AddVehicle";
+import {NavBar} from './components/navbar/NavBar';
 import { VehicleListDisplay } from './components/vehicle/VehicleListDisplay';
 import { AddVehicleMultiStageForm } from './components/vehicle/add/AddVehicleForm';
 
@@ -34,43 +32,44 @@ const App = () => {
       storeToken(token);
     }} />;
   }
-  return <div className="App">
+  return <div className='App'>
     <NavBar/>
     <Container fluid>
+      <br/>
       <Row>
-      {/*<Col xs={2} id="sidebar-wrapper">*/}
+      {/*<Col xs={2} id='sidebar-wrapper'>*/}
       {/*  <SideBar/>*/}
       {/*</Col>*/}
       <Col xs={12} id={'page-content-wrapper'}>
         <Switch>
-          <Route path="/location/create">
+          <Route path='/location/create'>
             <NewLocation />
           </Route>
-          <Route path="/location/all">
+          <Route path='/location/all'>
             <LocationList />
           </Route>
-          <Route path="/chassis/all">
+          <Route path='/chassis/all'>
             <ChassisSetupList />
           </Route>
-          <Route path="/chassis/create">
+          <Route path='/chassis/create'>
             <NewChassis />
           </Route>
-          <Route path="/vehicle/all">
+          <Route path='/vehicle/all'>
             <VehicleListDisplay />
           </Route>
-          <Route path="/vehicle/create">
+          <Route path='/vehicle/create'>
             <AddVehicleMultiStageForm />
           </Route>
-          <Route path="/results">
+          <Route path='/results'>
             <Dashboard />
           </Route>
-          <Route path="/query">
+          <Route path='/query'>
             <QueryRaceResults />
           </Route>
-          <Route path="/add">
+          <Route path='/add'>
             <AddResult />
           </Route>
-          <Route path="/">
+          <Route path='/'>
             <QueryRaceResults />
           </Route>
         </Switch>

@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react"
-import { Button, Container, Toast, ToastContainer } from "react-bootstrap"
+import { Button, Container, ProgressBar, Toast, ToastContainer } from "react-bootstrap"
 import { FormProvider, useForm } from "react-hook-form"
 import { SuspensionForm } from "./SuspensionForm"
 import { WeightForm } from "./WeightForm"
@@ -36,6 +36,9 @@ export const AddVehicleMultiStageForm = () => {
     const form = useForm();
     const history = useHistory();
     const watchName = form.watch("name");
+    const currentStep = step + 1
+    const numberOfSteps = formStagesMaxIndex + 1
+    const currentStepProgress = currentStep/numberOfSteps * 100
 
     const nextStep = () => {
         setName(watchName)
@@ -77,7 +80,9 @@ export const AddVehicleMultiStageForm = () => {
         <FormProvider {...form}>
             <h3>Add Vehicle</h3>
             {name && <h4>{name}</h4>}
-            <div className="page-counter">Page: {step + 1}/{formStagesMaxIndex + 1}</div>
+            {/* <div className="page-counter">Page: {step + 1}/{formStagesMaxIndex + 1}</div> */}
+            <ProgressBar now={currentStepProgress} label={`${currentStep}/${numberOfSteps}`} />
+            <br/>
             <form onSubmit={form.handleSubmit(saveVehicle)}>
                 <div>{formStages[step]}</div>
                 <br />
