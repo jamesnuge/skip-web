@@ -29,7 +29,8 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
             <tbody>
                 {results.length !== 0 &&
                     results.map(({ id, datetime, vehicle, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr key={id}>
-                        <td scope="col" className='text-start'>{datetime}</td>
+                        {/* <td scope="col" className='text-start'>{datetime}</td> */}
+                        {generateDateCell(datetime)}
                         {/*{generateLocationCell(location)}*/}
                         <td scope="col" className='text-start'>{location}</td>
                         {/*{generateChassisSetupCell(vehicle.chassisSetup)}*/}
@@ -46,6 +47,11 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
             </tbody>
         </table>
     </Row>
+}
+
+const generateDateCell = (val: string) => {
+    const date = new Date(val)
+    return <td scope="col" className="text-start">{date.toDateString()}<br/>{date.toTimeString().slice(0, 8)}</td>
 }
 
 const generateLocationCell = (location: Location) => {
