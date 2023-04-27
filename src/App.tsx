@@ -58,11 +58,11 @@ const App = () => {
           <Route path='/vehicle/all'>
             <VehicleListDisplay />
           </Route>
-          <Route path='/vehicle/:id'>
-            <VehicleDisplay />
-          </Route>
           <Route path='/vehicle/create'>
             <AddVehicleMultiStageForm />
+          </Route>
+          <Route path='/vehicle/:id'>
+            <VehicleDisplay />
           </Route>
           <Route path='/results'>
             <Dashboard />
