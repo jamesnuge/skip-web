@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from 'react-hook-form'
-import { ToastContainer, Toast, Card, Row, Col, Form } from 'react-bootstrap'
-import { fetchTokenFromStorage } from "../../../App";
+import { ToastContainer, Toast, Card, Row, Col, Form, Modal, Button } from 'react-bootstrap'
 import { locationApi } from "../../location/locationApi";
 import { Location } from "../../location/Location";
 import {VehicleSummary} from "../../vehicle/Vehicle";
@@ -9,12 +8,18 @@ import {vehicleApi} from "../../vehicle/vehicleApi";
 import { resultApi } from "../resultApi";
 import { useHistory } from "react-router-dom";
 import { startLineApi } from "../startLine/startLineApi";
+import { VehicleModalDisplay } from "../../vehicle/display/VehicleDisplay";
+import _ from "lodash";
 
 export const AddResult = () => {
     const [errorMessage, setErrorMessage] = useState<String | undefined>(undefined);
     const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined);
     const [locations, setLocations] = useState<Location[]>([]);
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([]);
+    const [vehicleId, setVehicleId] = useState<number | undefined>(undefined)
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const { handleSubmit, register, watch, setValue } = useForm();
     const { push } = useHistory()
     const loadLocationsAndChassisSetups = async () => {
@@ -23,8 +28,10 @@ export const AddResult = () => {
         const vehicleSummaries = await vehicleApi.getAllSummaries();
         setVehicles(vehicleSummaries);
     }
+    
     const loadLatestStartLine = async () => {
         if (watchVehicleId) {
+            setVehicleId(watchVehicleId as number)
             const {launchRpm, boost} = await startLineApi.getVehiclesPreviousStartLine(watchVehicleId as number)
             setValue("startLine.launchRpm", launchRpm)
             setValue("startLine.boost", boost)
@@ -68,6 +75,22 @@ export const AddResult = () => {
                     <Toast.Body>Unable to save result. Please check all values are present and correct</Toast.Body>
                 </Toast>
             </ToastContainer>
+        <Modal show={show} onHide={handleClose} size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>Change Tuneup</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <VehicleModalDisplay id={watchVehicleId}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
         <h2>Add Result</h2>
         {locations.length === 0 ? <p>Loading...</p> :
             <form onSubmit={handleSubmit(printResult)}>
@@ -111,6 +134,13 @@ export const AddResult = () => {
                                         <label htmlFor="boost" className='text-start'>Boost:</label>
                                         <input id="" className='form-control' type="number" {...register("startLine.boost", { required: true })} placeholder="Launch RPM" />
                                     </Col>
+                                </Row>
+                                <br></br>
+                                <Row>
+                                    <Col xs={10}/>
+                                    <Col xs={2}>
+                                        <Button disabled={_.isUndefined(vehicleId)} onClick={handleShow}>Change tuneup</Button>
+                                        </Col>
                                 </Row>
                             </Card.Body>
                         </Card>

@@ -98,6 +98,34 @@ export const VehicleDisplay = () => {
     </>
 }
 
+export interface VehicleModalDisplayProps {
+    id: number
+}
+
+export const VehicleModalDisplay = ({id}: VehicleModalDisplayProps) => {
+    const [vehicle, setVehicle] = useState<Vehicle>();
+    const {push} = useHistory();
+    const fetchVehicle = async () => {
+        const response = await vehicleApi.get(id)
+        setVehicle(response)
+    }
+    useEffect(() => {
+        fetchVehicle();
+    }, [])
+    return <>
+        {!vehicle ? "Loading..." :
+            <>
+                <h3 className="vehicle-name">{vehicle.name}</h3>
+                <Tabs className="mb-3">
+                    {tabList.map(({ key, title, node }) => <Tab eventKey={key} title={title}>
+                        {node(vehicle!)}
+                    </Tab>)}
+                </Tabs>
+            </>
+        }
+    </>
+}
+
 export const Fieldset = (value: any, title: string, name: string, className: string = "text-right") => {
     return <InputGroup className="mb-3">
         <InputGroup.Text id="basic-addon1">{title}</InputGroup.Text>
