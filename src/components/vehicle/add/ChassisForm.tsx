@@ -2,10 +2,9 @@ import { useFormContext } from "react-hook-form";
 import { Card, Col, Form, Row, } from "react-bootstrap"
 import _ from "lodash";
 
-export const ChassisForm = ({prefix}: any) => {
+export const ChassisForm = () => {
     const {register} = useFormContext();
-    const hasPrefix = !_.isUndefined(prefix) && !_.isNull(prefix) && !(prefix === "")
-    const registerChassisInput = (name: string, props: any) => register(`${prefix + (hasPrefix ? "." : "")}chassisSetup.${name}`, props)
+    const registerChassisInput = (name: string, props: any) => register(`chassisSetup.${name}`, props)
    return <>
         <h4>Chassis:</h4>
         <Card>

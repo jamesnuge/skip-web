@@ -3,7 +3,10 @@ import { resultApi } from './resultApi'
 import { Location } from '../location/Location'
 import { useHistory } from 'react-router-dom'
 import { RaceResultListDisplay } from './RaceResultListDisplay'
-import {Vehicle} from "../vehicle/Vehicle";
+import {Clutch, Converter, Suspension, Transmission, TyresAndRims, Vehicle, Weight, WheelieBars} from "../vehicle/Vehicle";
+import { ChassisSetup } from '../chassis/Chassis'
+import { Button, Modal } from 'react-bootstrap'
+import { ResultVehicleConfigDisplay } from '../vehicle/display/VehicleDisplay'
 
 export interface Result {
     id: number,
@@ -25,7 +28,15 @@ export interface Result {
 
 export const Dashboard = () => {
     const [data, setData] = useState<Result[]>([])
-    const {push} = useHistory();
+    const [show, setShow] = useState(false);
+    const [resultId, setResultId] = useState<number | undefined>(undefined)
+
+    const handleClose = () => setShow(false);
+    const handleShow = (id: number) => {
+        setResultId(id);
+        setShow(true);
+    }
+
     const handleFetchData = async () => {
         const response = await resultApi.getAll()
         setData(response)
@@ -35,6 +46,30 @@ export const Dashboard = () => {
     }, [])
     return <div>
         <h2>Results</h2>
+        <Modal show={show} onHide={handleClose} size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>Change Tuneup</Modal.Title>
+        </Modal.Header>
+            <Modal.Body>
+                    <ResultVehicleConfigDisplay id={resultId as number} />
+            </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
         <RaceResultListDisplay results={data}/>
     </div>
+}
+
+export interface ResultVehicleConfig {
+    chassisSetup: ChassisSetup;
+    clutch: Clutch;
+    suspension: Suspension,
+    converter: Converter,
+    transmission: Transmission,
+    weight: Weight,
+    tyresAndRims: TyresAndRims,
+    wheelieBars: WheelieBars
 }

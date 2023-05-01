@@ -23,7 +23,7 @@ const formStages: ReactNode[] = [
     <TyresAndRimsForm />,
     <ConverterForm />,
     <WheelieBarsForm />,
-    <ChassisForm prefix=""/>,
+    <ChassisForm/>,
     <ClutchForm/>
 ]
 const formStagesMaxIndex = formStages.length - 1;

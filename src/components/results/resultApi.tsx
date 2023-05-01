@@ -1,6 +1,6 @@
 import { fetchTokenFromStorage } from "../../App";
 import { RaceRequest } from "../query/QueryRaceResults";
-import { Result } from "./Results";
+import { Result, ResultVehicleConfig } from "./Results";
 
 export const resultApi = {
     getAll: async () => {
@@ -34,6 +34,16 @@ export const resultApi = {
             // TODO: Fix typing here
             body: JSON.stringify(result)
         })
+    },
+    getVehicleConfig: async (id: number) => {
+        const response = await fetch(`/api/results/vehicle-config/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + fetchTokenFromStorage()
+            }
+        })
+        return await response.json() as ResultVehicleConfig
     }
     
 }

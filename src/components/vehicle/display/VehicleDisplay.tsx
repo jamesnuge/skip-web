@@ -12,6 +12,17 @@ import { WeightDisplay } from './WeightDisplay';
 import { TyresAndRimsDisplay } from './TyresAndRimsDisplay';
 import { WheelieBarsDisplay } from './WheelieBarsDisplay';
 import './VehicleDisplay.css'
+import { ChassisForm } from '../add/ChassisForm';
+import { ClutchForm } from '../add/ClutchForm';
+import { ConverterForm } from '../add/ConverterForm';
+import { SuspensionForm } from '../add/SuspensionForm';
+import { TransmissionForm } from '../add/TransmissionForm';
+import { WeightForm } from '../add/WeightForm';
+import { TyresAndRimsForm } from '../add/TyresAndRimsForm';
+import { WheelieBarsForm } from '../add/WheelieBarForm';
+import { StartLineForm } from '../add/StartLineForm';
+import { resultApi } from '../../results/resultApi';
+import { ResultVehicleConfig } from '../../results/Results';
 
 export interface VehicleDisplayParams {
     id: string | undefined;
@@ -20,7 +31,7 @@ export interface VehicleDisplayParams {
 interface TabConfiguration {
     key: string,
     title: string,
-    node: (vehicle: Vehicle) => ReactNode
+    node: (vehicle: Vehicle, readOnly: boolean) => ReactNode
 }
 
 const tabList: TabConfiguration[] = [
@@ -90,7 +101,29 @@ export const VehicleDisplay = () => {
                 <h3 className="vehicle-name">{vehicle.name}</h3>
                 <Tabs className="mb-3">
                     {tabList.map(({ key, title, node }) => <Tab eventKey={key} title={title}>
-                        {node(vehicle!)}
+                        {node(vehicle!, true)}
+                    </Tab>)}
+                </Tabs>
+            </>
+        }
+    </>
+}
+
+export const ResultVehicleConfigDisplay = ({id}: any) => {
+    const [vehicle, setVehicle] = useState<ResultVehicleConfig>();
+    const fetchVehicle = async () => {
+        const response = await resultApi.getVehicleConfig(id)
+        setVehicle(response)
+    }
+    useEffect(() => {
+        fetchVehicle();
+    }, [])
+    return <>
+        {!vehicle ? "Loading..." :
+            <>
+                <Tabs className="mb-3">
+                    {tabList.map(({ key, title, node }) => <Tab eventKey={key} title={title}>
+                        {node(vehicle as any, true)}
                     </Tab>)}
                 </Tabs>
             </>
@@ -102,9 +135,55 @@ export interface VehicleModalDisplayProps {
     id: number
 }
 
-export const VehicleModalDisplay = ({id}: VehicleModalDisplayProps) => {
+const formTabList: TabConfiguration[] = [
+    {
+        key: "startLine",
+        title: "Start Line",
+        node: StartLineForm
+    },
+    {
+        key: "tyres",
+        title: "Tyres and Rims",
+        node: TyresAndRimsForm
+    },
+    {
+        key: "chassis",
+        title: "Chassis",
+        node: ChassisForm
+    },
+    {
+        key: "clutch",
+        title: "Clutch",
+        node: ClutchForm
+    },
+    {
+        key: "converter",
+        title: "Converter",
+        node: ConverterForm
+    },
+    {
+        key: "suspension",
+        title: "Suspension",
+        node: SuspensionForm
+    },
+    {
+        key: "transmission",
+        title: "Transmission",
+        node: TransmissionForm
+    },
+    {
+        key: "weight",
+        title: "Weight",
+        node: WeightForm
+    },
+    {
+        key: "wheelieBars",
+        title: "Wheelie Bars",
+        node: WheelieBarsForm
+    }
+]
+export const VehicleModalForm = ({id}: VehicleModalDisplayProps) => {
     const [vehicle, setVehicle] = useState<Vehicle>();
-    const {push} = useHistory();
     const fetchVehicle = async () => {
         const response = await vehicleApi.get(id)
         setVehicle(response)
@@ -117,8 +196,8 @@ export const VehicleModalDisplay = ({id}: VehicleModalDisplayProps) => {
             <>
                 <h3 className="vehicle-name">{vehicle.name}</h3>
                 <Tabs className="mb-3">
-                    {tabList.map(({ key, title, node }) => <Tab eventKey={key} title={title}>
-                        {node(vehicle!)}
+                    {formTabList.map(({ key, title, node }) => <Tab key={key} eventKey={key} title={title}>
+                        {node(vehicle!, true)}
                     </Tab>)}
                 </Tabs>
             </>
@@ -126,12 +205,13 @@ export const VehicleModalDisplay = ({id}: VehicleModalDisplayProps) => {
     </>
 }
 
-export const Fieldset = (value: any, title: string, name: string, className: string = "text-right") => {
+export const Fieldset = (value: any, title: string, name: string, readOnly: boolean = true, className: string = "text-right") => {
     return <InputGroup className="mb-3">
         <InputGroup.Text id="basic-addon1">{title}</InputGroup.Text>
         <Form.Control className={className}
-            readOnly
+            readOnly={readOnly}
             value={value}
+            onChange={console.log}
             aria-label="Title"
             aria-describedby="basic-addon1"
         />

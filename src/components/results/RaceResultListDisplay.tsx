@@ -1,8 +1,12 @@
 import { Result } from './Results';
 import { Location } from '../location/Location';
-import { Col, Container, OverlayTrigger, Popover, Row } from 'react-bootstrap';
+import { Button, Col, Container, Modal, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { RaceRequest } from '../query/QueryRaceResults';
 import { ChassisSetup } from '../chassis/Chassis';
+import { useState } from 'react';
+import { ResultVehicleConfigDisplay } from '../vehicle/display/VehicleDisplay';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGears } from '@fortawesome/free-solid-svg-icons';
 
 export interface RaceResultListProps {
     results: Result[];
@@ -10,7 +14,31 @@ export interface RaceResultListProps {
 }
 
 export const RaceResultListDisplay = ({results, request}: RaceResultListProps) => {
+    const [show, setShow] = useState(false);
+    const [resultId, setResultId] = useState<number | undefined>(undefined)
+    const [vehicleName, setVehicleName] = useState<string | undefined>(undefined)
+
+    const handleClose = () => setShow(false);
+    const handleShow = (id: number, name: string) => {
+        setResultId(id);
+        setVehicleName(name);
+        setShow(true);
+    }
+
     return <Row>
+                <Modal show={show} onHide={handleClose} size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>{vehicleName} Configuration</Modal.Title>
+        </Modal.Header>
+            <Modal.Body>
+                    <ResultVehicleConfigDisplay id={resultId as number} />
+            </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
         <table className="table table-striped tableFixHead thead-light">
             <thead className='thead-dark'>
                 <tr>
@@ -23,6 +51,7 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
                     <th scope="col">Track Temp</th>
                     <th scope="col">Temperature</th>
                     <th scope="col">Humidity</th>
+                    <th scope="col">View Config</th>
                     {request && <th scope="col">Rank</th>}
                 </tr>
             </thead>
@@ -41,6 +70,7 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
                         <td scope="col" className='text-start'>{trackTemperature}°C {request && getDiffElement(trackTemperature, request.trackTemperature)}</td>
                         <td scope="col" className='text-start'>{temperature}°C {request && getDiffElement(temperature, request.temperature)}</td>
                         <td scope="col" className='text-start'>{humidity}% {request && getDiffElement(humidity, request.humidity)}</td>
+                        <td scope="col"><FontAwesomeIcon icon={faGears} onClick={() => handleShow(id, vehicle)}/></td>
                         {request && <td scope="col" className='text-start'>{rank}</td>}
                     </tr>)
                 }

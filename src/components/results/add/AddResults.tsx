@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { ToastContainer, Toast, Card, Row, Col, Form, Modal, Button } from 'react-bootstrap'
 import { locationApi } from "../../location/locationApi";
 import { Location } from "../../location/Location";
@@ -8,7 +8,7 @@ import {vehicleApi} from "../../vehicle/vehicleApi";
 import { resultApi } from "../resultApi";
 import { useHistory } from "react-router-dom";
 import { startLineApi } from "../startLine/startLineApi";
-import { VehicleModalDisplay } from "../../vehicle/display/VehicleDisplay";
+import { VehicleModalForm } from "../../vehicle/display/VehicleDisplay";
 import _ from "lodash";
 
 export const AddResult = () => {
@@ -20,10 +20,16 @@ export const AddResult = () => {
     const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | undefined>(undefined)
     const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        updateFormWithVehicleDetails(selectedVehicle);
+        setShow(false);
+    }
+    const handleSave = () => setShow(false);
+
     const handleShow = () => setShow(true);
 
-    const { handleSubmit, register, watch, setValue } = useForm();
+    const form = useForm();
+    const { handleSubmit, register, watch, setValue } = form;
     const { push } = useHistory()
     const loadLocationsAndVehicles = async () => {
         const locations = await locationApi.getAll();
@@ -33,20 +39,31 @@ export const AddResult = () => {
     }
 
     const watchVehicleId = watch("vehicleId")
+
+    const updateFormWithVehicleDetails = (vehicle: Vehicle | undefined) => {
+        if (vehicle != undefined) {
+            Object.keys(vehicle).forEach((key: any) => {
+                const value: any = (vehicle as any)[key]
+                if (_.isObject(value)) {
+                    delete (value as any).id
+                    console.log(JSON.stringify(value, null, 2))
+                    setValue(key, value)
+                }
+            })
+        }
+    }
     
     const loadLatestStartLine = async () => {
-        if (_.isNumber(parseInt(watchVehicleId))) {
-            setVehicleId(watchVehicleId as number)
+        const vehicleIdAsInt = parseInt(watchVehicleId)
+        if (!_.isNaN(vehicleIdAsInt)) {
+            setVehicleId(vehicleIdAsInt)
+            console.log("++++ FETCHING VEHICLE ID: " + watchVehicleId + " ++++")
             const vehicle: any = await vehicleApi.get(watchVehicleId);
+            setSelectedVehicle(vehicle);
             const {launchRpm, boost} = await startLineApi.getVehiclesPreviousStartLine(watchVehicleId as number)
             setValue("startLine.launchRpm", launchRpm);
             setValue("startLine.boost", boost);
-            Object.keys(vehicle).forEach((key: any) => {
-                const value = vehicle[key]
-                delete value["id"]
-                console.log(JSON.stringify(value, null, 2))
-            })
-            setSelectedVehicle(vehicle);
+            updateFormWithVehicleDetails(vehicle);
         }
     }
 
@@ -89,18 +106,20 @@ export const AddResult = () => {
                     <Toast.Body>Unable to save result. Please check all values are present and correct</Toast.Body>
                 </Toast>
             </ToastContainer>
-        <Modal show={show} onHide={handleClose} size="xl">
+        <Modal show={show} onHide={handleSave} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Change Tuneup</Modal.Title>
+          <Modal.Title>Change Vehicle Configuration</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-            <VehicleModalDisplay id={watchVehicleId}/>
-        </Modal.Body>
+            <Modal.Body>
+                <FormProvider {...form}>
+                    <VehicleModalForm id={watchVehicleId} />
+                </FormProvider>
+            </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleSave}>
             Save Changes
           </Button>
         </Modal.Footer>
@@ -139,21 +158,11 @@ export const AddResult = () => {
                                         </Form.Select>
                                     </Col>
                                 </Row>
-                                <Row>
-                                    <Col>
-                                        <label htmlFor="launchRpm" className='text-start'>Launch RPM:</label>
-                                        <input id="" className='form-control' type="number" {...register("startLine.launchRpm", { required: true })} placeholder="Launch RPM" />
-                                    </Col>
-                                    <Col>
-                                        <label htmlFor="boost" className='text-start'>Boost:</label>
-                                        <input id="" className='form-control' type="number" {...register("startLine.boost", { required: true })} placeholder="Launch RPM" />
-                                    </Col>
-                                </Row>
                                 <br></br>
                                 <Row>
                                     <Col xs={10}/>
                                     <Col xs={2}>
-                                        <Button disabled={!selectedVehicle} onClick={handleShow}>Change tuneup</Button>
+                                        <Button disabled={!selectedVehicle} onClick={handleShow}>Change vehicle config</Button>
                                         </Col>
                                 </Row>
                             </Card.Body>
