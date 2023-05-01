@@ -49,7 +49,7 @@ export const AddResult = () => {
     const watchVehicleId = watch("vehicleId")
 
     const updateFormWithVehicleDetails = (vehicle: Vehicle | undefined) => {
-        if (vehicle != undefined) {
+        if (vehicle !== undefined) {
             Object.keys(vehicle).forEach((key: any) => {
                 const value: any = (vehicle as any)[key]
                 if (_.isObject(value)) {

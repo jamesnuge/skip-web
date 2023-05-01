@@ -36,13 +36,13 @@ export const NewLocation = () => {
 
     return <>
         <ToastContainer className="p-3" position='top-end'>
-            <Toast bg="success" show={successMessage != undefined} onClose={() => setSuccessMessage(undefined)}>
+            <Toast bg="success" show={successMessage !== undefined} onClose={() => setSuccessMessage(undefined)}>
                 <Toast.Header>
                     <strong className="me-auto">Location added</strong>
                 </Toast.Header>
                 <Toast.Body>Successfully saved location</Toast.Body>
             </Toast>
-            <Toast bg="error" show={errorMessage != undefined} onClose={() => setErrorMessage(undefined)}>
+            <Toast bg="error" show={errorMessage !== undefined} onClose={() => setErrorMessage(undefined)}>
                 <Toast.Header>
                     <strong className="me-auto">Failed to add location</strong>
                 </Toast.Header>

@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { Vehicle } from '../Vehicle'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { vehicleApi } from '../vehicleApi';
 import { Container, Form, InputGroup, Row, Tab, Tabs } from 'react-bootstrap';
 import { ChassisSetupDisplay } from './ChassisSetupDisplay';
