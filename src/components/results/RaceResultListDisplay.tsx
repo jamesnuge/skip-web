@@ -16,19 +16,27 @@ export interface RaceResultListProps {
 export const RaceResultListDisplay = ({results, request}: RaceResultListProps) => {
     const [show, setShow] = useState(false);
     const [resultId, setResultId] = useState<number | undefined>(undefined)
+    const [selectedResult, setSelectedResult] = useState<string | undefined>(undefined)
+    const [selectedLocation, setSelectedLocation] = useState<string | undefined>(undefined)
     const [vehicleName, setVehicleName] = useState<string | undefined>(undefined)
 
     const handleClose = () => setShow(false);
-    const handleShow = (id: number, name: string) => {
+    const handleShow = (id: number, name: string, date: string, location: string) => {
         setResultId(id);
         setVehicleName(name);
+        setSelectedResult(date);
+        setSelectedLocation(location);
         setShow(true);
     }
 
     return <Row>
                 <Modal show={show} onHide={handleClose} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>{vehicleName} Configuration</Modal.Title>
+          <Modal.Title>
+            {vehicleName} Configuration<br/>
+            For result {selectedResult} <br/>
+            at {selectedLocation}
+            </Modal.Title>
         </Modal.Header>
             <Modal.Body>
                     <ResultVehicleConfigDisplay id={resultId as number} />
@@ -70,7 +78,7 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
                         <td scope="col" className='text-start'>{trackTemperature}°C {request && getDiffElement(trackTemperature, request.trackTemperature)}</td>
                         <td scope="col" className='text-start'>{temperature}°C {request && getDiffElement(temperature, request.temperature)}</td>
                         <td scope="col" className='text-start'>{humidity}% {request && getDiffElement(humidity, request.humidity)}</td>
-                        <td scope="col"><FontAwesomeIcon icon={faGears} onClick={() => handleShow(id, vehicle)}/></td>
+                        <td scope="col"><FontAwesomeIcon icon={faGears} onClick={() => handleShow(id, vehicle, new Date(datetime).toDateString() + " " + new Date(datetime).toTimeString().slice(0, 8), location)}/></td>
                         {request && <td scope="col" className='text-start'>{rank}</td>}
                     </tr>)
                 }
