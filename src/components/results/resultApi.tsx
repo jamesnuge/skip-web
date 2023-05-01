@@ -37,3 +37,7 @@ export const resultApi = {
     }
     
 }
+
+export const resultApiUtil = {
+    
+}

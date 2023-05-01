@@ -8,12 +8,6 @@ export const ChassisSetupDisplay = ({ chassisSetup }: Vehicle) => {
         <Container>
             <FormGroup>
                 <Row>
-                    <Col xs={6}>
-                     {Fieldset(name, "Name", "name", "text-center")}
-                    </Col>
-                    <Col xs={6}/>
-                </Row>
-                <Row>
                     <Col>
                      {Fieldset(frontSpread, "Front Spread", "frontSpread")}
                     </Col>

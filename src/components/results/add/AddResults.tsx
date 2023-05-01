@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { ToastContainer, Toast, Card, Row, Col, Form, Modal, Button } from 'react-bootstrap'
 import { locationApi } from "../../location/locationApi";
 import { Location } from "../../location/Location";
-import {VehicleSummary} from "../../vehicle/Vehicle";
+import {Vehicle, VehicleSummary} from "../../vehicle/Vehicle";
 import {vehicleApi} from "../../vehicle/vehicleApi";
 import { resultApi } from "../resultApi";
 import { useHistory } from "react-router-dom";
@@ -17,33 +17,47 @@ export const AddResult = () => {
     const [locations, setLocations] = useState<Location[]>([]);
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([]);
     const [vehicleId, setVehicleId] = useState<number | undefined>(undefined)
+    const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | undefined>(undefined)
     const [show, setShow] = useState(false);
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
     const { handleSubmit, register, watch, setValue } = useForm();
     const { push } = useHistory()
-    const loadLocationsAndChassisSetups = async () => {
+    const loadLocationsAndVehicles = async () => {
         const locations = await locationApi.getAll();
         setLocations(locations);
         const vehicleSummaries = await vehicleApi.getAllSummaries();
         setVehicles(vehicleSummaries);
     }
+
+    const watchVehicleId = watch("vehicleId")
     
     const loadLatestStartLine = async () => {
-        if (watchVehicleId) {
+        if (_.isNumber(parseInt(watchVehicleId))) {
             setVehicleId(watchVehicleId as number)
+            const vehicle: any = await vehicleApi.get(watchVehicleId);
             const {launchRpm, boost} = await startLineApi.getVehiclesPreviousStartLine(watchVehicleId as number)
-            setValue("startLine.launchRpm", launchRpm)
-            setValue("startLine.boost", boost)
+            setValue("startLine.launchRpm", launchRpm);
+            setValue("startLine.boost", boost);
+            Object.keys(vehicle).forEach((key: any) => {
+                const value = vehicle[key]
+                delete value["id"]
+                console.log(JSON.stringify(value, null, 2))
+            })
+            setSelectedVehicle(vehicle);
         }
     }
-    const watchVehicleId = watch("vehicleId")
+
     useEffect(() => {
-        loadLocationsAndChassisSetups();
+        loadLocationsAndVehicles();
     }, []);
+
     useEffect(() => {
         loadLatestStartLine()
     }, [watchVehicleId])
+
     const printResult = (value: any) => {
         const valueWithAltitude = {
             ...value,
@@ -139,7 +153,7 @@ export const AddResult = () => {
                                 <Row>
                                     <Col xs={10}/>
                                     <Col xs={2}>
-                                        <Button disabled={_.isUndefined(vehicleId)} onClick={handleShow}>Change tuneup</Button>
+                                        <Button disabled={!selectedVehicle} onClick={handleShow}>Change tuneup</Button>
                                         </Col>
                                 </Row>
                             </Card.Body>
