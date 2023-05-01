@@ -107,7 +107,7 @@ export const VehicleDisplay = () => {
                 <br/>
                 <br/>
                 <Row>
-                    <VehicleResults vehicleId={vehicle.id} />
+                    <VehicleResults vehicleId={vehicle.id} limit={10}/>
                 </Row>
             </Container>
         }
