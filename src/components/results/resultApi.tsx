@@ -44,8 +44,17 @@ export const resultApi = {
             }
         })
         return await response.json() as ResultVehicleConfig
+    },
+    getByVehicle: async (id: number) => {
+        const response = await fetch(`/api/results/vehicle/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + fetchTokenFromStorage()
+            }
+        });
+        return await response.json() as Result[]
     }
-    
 }
 
 export const resultApiUtil = {

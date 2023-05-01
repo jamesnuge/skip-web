@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import './App.css';
-import {Dashboard} from './components/results/Results';
+import {Dashboard, VehicleResultDisplay} from './components/results/Results';
 import {AddResult} from './components/results/add/AddResults';
 import {Login} from './components/login/Login';
 import {Col, Container, Row} from 'react-bootstrap';
@@ -15,6 +15,7 @@ import {NavBar} from './components/navbar/NavBar';
 import { VehicleListDisplay } from './components/vehicle/VehicleListDisplay';
 import { AddVehicleMultiStageForm } from './components/vehicle/add/AddVehicleForm';
 import { VehicleDisplay } from './components/vehicle/display/VehicleDisplay';
+import { Homepage } from './components/HomePage';
 
 export const fetchTokenFromStorage = () => localStorage.getItem('authToken') || '';
 
@@ -38,9 +39,6 @@ const App = () => {
     <Container fluid>
       <br/>
       <Row>
-      {/*<Col xs={2} id='sidebar-wrapper'>*/}
-      {/*  <SideBar/>*/}
-      {/*</Col>*/}
       <Col xs={12} id={'page-content-wrapper'}>
         <Switch>
           <Route path='/location/create'>
@@ -64,17 +62,23 @@ const App = () => {
           <Route path='/vehicle/:id'>
             <VehicleDisplay />
           </Route>
+          <Route path='/results/vehicle/:vehicleId'>
+            <VehicleResultDisplay />
+          </Route>
           <Route path='/results'>
             <Dashboard />
           </Route>
           <Route path='/query'>
             <QueryRaceResults />
           </Route>
+          <Route path='/add/:vehicleId'>
+            <AddResult />
+          </Route>
           <Route path='/add'>
             <AddResult />
           </Route>
           <Route path='/'>
-            <QueryRaceResults />
+            <Homepage />
           </Route>
         </Switch>
       </Col>

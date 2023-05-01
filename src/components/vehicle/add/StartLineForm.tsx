@@ -5,7 +5,7 @@ export const StartLineForm = () => {
     const {register} = useFormContext();
     const registerStartLine = (name: string, props: any) => register(`startLine.${name}`, props)
    return <>
-    <h4>Tyres and Rims:</h4>
+    <h4>Start Line:</h4>
     <Card>
         <Card.Body>
             <Row>

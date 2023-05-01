@@ -6,12 +6,13 @@ import { Location } from "../../location/Location";
 import {Vehicle, VehicleSummary} from "../../vehicle/Vehicle";
 import {vehicleApi} from "../../vehicle/vehicleApi";
 import { resultApi } from "../resultApi";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { startLineApi } from "../startLine/startLineApi";
 import { VehicleModalForm } from "../../vehicle/display/VehicleDisplay";
 import _ from "lodash";
 
 export const AddResult = () => {
+    const preselectedVehicleId = useParams<any>().vehicleId;
     const [errorMessage, setErrorMessage] = useState<String | undefined>(undefined);
     const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined);
     const [locations, setLocations] = useState<Location[]>([]);
@@ -25,8 +26,9 @@ export const AddResult = () => {
         setShow(false);
     }
     const handleSave = () => setShow(false);
-
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setShow(true);
+    }
 
     const form = useForm();
     const { handleSubmit, register, watch, setValue } = form;
@@ -36,6 +38,12 @@ export const AddResult = () => {
         setLocations(locations);
         const vehicleSummaries = await vehicleApi.getAllSummaries();
         setVehicles(vehicleSummaries);
+        if (preselectedVehicleId !== undefined) {
+            const vehicle = await vehicleApi.get(preselectedVehicleId)
+            setValue("vehicleId", preselectedVehicleId)
+            setSelectedVehicle(vehicle)
+            updateFormWithVehicleDetails(vehicle);
+        }
     }
 
     const watchVehicleId = watch("vehicleId")
@@ -150,12 +158,14 @@ export const AddResult = () => {
                                     </Col>
                                     <Col>
                                         <label htmlFor="vehicle" className='text-start'>Vehicle:</label>
+                                        {preselectedVehicleId !== undefined ? <Form.Select disabled id="vehicle" aria-label="Default select example"><option>{selectedVehicle?.name || ""}</option></Form.Select> :
                                         <Form.Select id="vehicle" aria-label="Default select example" {...register("vehicleId", { required: true })}>
                                             <option>Select Vehicle</option>
                                             {vehicles.map((key: VehicleSummary) => {
                                                 return <option key={key.id} value={key.id}>{key.name}</option>
                                             })}
                                         </Form.Select>
+                                        }
                                     </Col>
                                 </Row>
                                 <br></br>

@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import { Vehicle } from '../Vehicle'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import { vehicleApi } from '../vehicleApi';
-import { Form, InputGroup, Tab, Tabs } from 'react-bootstrap';
+import { Container, Form, InputGroup, Row, Tab, Tabs } from 'react-bootstrap';
 import { ChassisSetupDisplay } from './ChassisSetupDisplay';
 import { ClutchDisplay } from './ClutchDisplay';
 import { ConverterDisplay } from './ConverterDisplay';
@@ -22,7 +22,7 @@ import { TyresAndRimsForm } from '../add/TyresAndRimsForm';
 import { WheelieBarsForm } from '../add/WheelieBarForm';
 import { StartLineForm } from '../add/StartLineForm';
 import { resultApi } from '../../results/resultApi';
-import { ResultVehicleConfig } from '../../results/Results';
+import { ResultVehicleConfig, VehicleResultDisplay, VehicleResults } from '../../results/Results';
 
 export interface VehicleDisplayParams {
     id: string | undefined;
@@ -97,14 +97,19 @@ export const VehicleDisplay = () => {
     }, [])
     return <>
         {!vehicle ? "Loading..." :
-            <>
+            <Container>
                 <h3 className="vehicle-name">{vehicle.name}</h3>
                 <Tabs className="mb-3">
                     {tabList.map(({ key, title, node }) => <Tab eventKey={key} title={title}>
                         {node(vehicle!, true)}
                     </Tab>)}
                 </Tabs>
-            </>
+                <br/>
+                <br/>
+                <Row>
+                    <VehicleResults vehicleId={vehicle.id} />
+                </Row>
+            </Container>
         }
     </>
 }
