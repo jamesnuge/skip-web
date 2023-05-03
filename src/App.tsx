@@ -23,15 +23,13 @@ const storeToken = (token: string) => {
   localStorage.setItem('authToken', token);
 }
 
-
-
 const App = () => {
   const storedToken = fetchTokenFromStorage();
   const [token, setToken] = useState<string>(storedToken);
   if (token === '') {
     return <Login onLogin={(token) => {
-      setToken(token);
       storeToken(token);
+      setToken(token);
     }} />;
   }
   return <div className='App'>

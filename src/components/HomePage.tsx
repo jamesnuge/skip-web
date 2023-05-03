@@ -31,6 +31,7 @@ export const Homepage = () => {
 const generateVehicleListItem = ({ id, name }: VehicleSummary, push: any) => {
     return <ListGroup.Item
         as="li"
+        key={id}
         className="d-flex justify-content-between align-items-start"
     >
         <div className="ms-2 me-auto">
