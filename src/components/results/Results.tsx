@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react'
 import { resultApi } from './resultApi'
-import { Location } from '../location/Location'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { RaceResultListDisplay } from './RaceResultListDisplay'
-import {Clutch, Converter, Suspension, Transmission, TyresAndRims, Vehicle, Weight, WheelieBars} from "../vehicle/Vehicle";
+import { Clutch, Converter, Suspension, Transmission, TyresAndRims, Weight, WheelieBars } from "../vehicle/Vehicle";
 import { ChassisSetup } from '../chassis/Chassis'
-import { Button, Modal } from 'react-bootstrap'
-import { ResultVehicleConfigDisplay } from '../vehicle/display/VehicleDisplay'
 
 export interface Result {
     id: number,
@@ -23,6 +20,7 @@ export interface Result {
     temperature: number,
     trackTemperature: number,
     humidity: number,
+    tuneupFile: string | undefined,
     rank: number
 }
 
@@ -37,7 +35,7 @@ export const Dashboard = () => {
     }, [])
     return <div>
         <h2>Results</h2>
-        <RaceResultListDisplay results={data}/>
+        <RaceResultListDisplay results={data} refresh={() => handleFetchData()}/>
     </div>
 }
 
@@ -54,10 +52,10 @@ export const VehicleResults = ({vehicleId, limit}: any) => {
     }
     useEffect(() => {
         handleFetchData()
-    }, [])
+    })
     return <div>
         <h3>Results</h3>
-        <RaceResultListDisplay results={data}/>
+        <RaceResultListDisplay results={data} refresh={() => handleFetchData()}/>
     </div>
 }
 

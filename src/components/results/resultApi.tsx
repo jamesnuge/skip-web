@@ -54,6 +54,17 @@ export const resultApi = {
             }
         });
         return await response.json() as Result[]
+    },
+    addTuneupFile: async (result: {resultId: number, tuneupFile: string}) => {
+        return fetch(`/api/results/add-tuneup-file`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + fetchTokenFromStorage()
+            },
+            body: JSON.stringify(result)
+        })
+
     }
 }
 

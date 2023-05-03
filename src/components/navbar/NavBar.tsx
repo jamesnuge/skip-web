@@ -38,7 +38,7 @@ export const NavBar = () => {
             </Nav>
             <Nav className='ml-auto'>
                 <Nav.Item>
-                    <a onClick={() => logout()} className='nav-link ml-auto'>Logout</a>
+                    <a href="/" onClick={() => logout()} className='nav-link ml-auto'>Logout</a>
                 </Nav.Item>
             </Nav>
         </Container>

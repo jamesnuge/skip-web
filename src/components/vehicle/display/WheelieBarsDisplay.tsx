@@ -1,4 +1,4 @@
-import { Col, Container, Form, FormGroup, InputGroup, Row } from 'react-bootstrap';
+import { Col, Container, FormGroup, Row } from 'react-bootstrap';
 import { Vehicle } from '../Vehicle';
 import { Fieldset } from './VehicleDisplay';
 

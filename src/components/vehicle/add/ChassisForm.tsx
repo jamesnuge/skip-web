@@ -1,6 +1,5 @@
 import { useFormContext } from "react-hook-form";
 import { Card, Col, Form, Row, } from "react-bootstrap"
-import _ from "lodash";
 
 export const ChassisForm = () => {
     const {register} = useFormContext();

@@ -37,8 +37,8 @@ export const LocationList = () => {
             </thead>
             <tbody>
                 {data.map(({ name, altitude }: Location) => <tr>
-                    <td scope="col">{name}</td>
-                    <td scope="col">{altitude}ft</td>
+                    <td>{name}</td>
+                    <td>{altitude}ft</td>
                 </tr>)
                 }
             </tbody>

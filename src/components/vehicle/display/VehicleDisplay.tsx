@@ -22,7 +22,7 @@ import { TyresAndRimsForm } from '../add/TyresAndRimsForm';
 import { WheelieBarsForm } from '../add/WheelieBarForm';
 import { StartLineForm } from '../add/StartLineForm';
 import { resultApi } from '../../results/resultApi';
-import { ResultVehicleConfig, VehicleResultDisplay, VehicleResults } from '../../results/Results';
+import { ResultVehicleConfig, VehicleResults } from '../../results/Results';
 
 export interface VehicleDisplayParams {
     id: string | undefined;
@@ -94,7 +94,7 @@ export const VehicleDisplay = () => {
     }
     useEffect(() => {
         fetchVehicle();
-    }, [])
+    })
     return <>
         {!vehicle ? "Loading..." :
             <Container>
@@ -122,12 +122,12 @@ export const ResultVehicleConfigDisplay = ({id}: any) => {
     }
     useEffect(() => {
         fetchVehicle();
-    }, [])
+    });
     return <>
         {!vehicle ? "Loading..." :
             <>
                 <Tabs className="mb-3">
-                    {tabList.map(({ key, title, node }) => <Tab eventKey={key} title={title}>
+                    {tabList.map(({ key, title, node }) => <Tab eventKey={key} key={key} title={title}>
                         {node(vehicle as any, true)}
                     </Tab>)}
                 </Tabs>
@@ -195,7 +195,7 @@ export const VehicleModalForm = ({id}: VehicleModalDisplayProps) => {
     }
     useEffect(() => {
         fetchVehicle();
-    }, [])
+    })
     return <>
         {!vehicle ? "Loading..." :
             <>

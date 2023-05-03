@@ -17,7 +17,6 @@ export const AddResult = () => {
     const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined);
     const [locations, setLocations] = useState<Location[]>([]);
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([]);
-    const [vehicleId, setVehicleId] = useState<number | undefined>(undefined)
     const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | undefined>(undefined)
     const [show, setShow] = useState(false);
 
@@ -64,8 +63,6 @@ export const AddResult = () => {
     const loadLatestStartLine = async () => {
         const vehicleIdAsInt = parseInt(watchVehicleId)
         if (!_.isNaN(vehicleIdAsInt)) {
-            setVehicleId(vehicleIdAsInt)
-            console.log("++++ FETCHING VEHICLE ID: " + watchVehicleId + " ++++")
             const vehicle: any = await vehicleApi.get(watchVehicleId);
             setSelectedVehicle(vehicle);
             const {launchRpm, boost} = await startLineApi.getVehiclesPreviousStartLine(watchVehicleId as number)
@@ -145,8 +142,6 @@ export const AddResult = () => {
                                         <label htmlFor="date" className='text-start'>Date:</label>
                                         <Form.Control type="datetime-local" {...register("datetime", { required: true })} />
                                     </Col>
-                                </Row>
-                                <Row>
                                     <Col>
                                         <label htmlFor="location" className='text-start'>Location:</label>
                                         <Form.Select id="location" aria-label="Default select example" {...register("location", { required: true })}>
@@ -155,6 +150,12 @@ export const AddResult = () => {
                                                 return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
                                             })}
                                         </Form.Select>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <label htmlFor="tuneupFile" className='text-start'>Tuneup File:</label>
+                                        <input id="tuneupFile" className='form-control' type="string" {...register("tuneupFile", { required: true })} placeholder="Tuneup File" />
                                     </Col>
                                     <Col>
                                         <label htmlFor="vehicle" className='text-start'>Vehicle:</label>

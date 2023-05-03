@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { resultApi } from '../results/resultApi'
 import './queryRaceResults.css'
-import { Container, Row, Col, Popover, OverlayTrigger } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { Result } from '../results/Results'
-import { Location } from '../location/Location'
-import { ChassisSetup } from '../chassis/Chassis'
 import { RaceResultListDisplay } from '../results/RaceResultListDisplay'
 
 export const QueryRaceResults = () => {
@@ -20,7 +18,6 @@ export const QueryRaceResults = () => {
             setData(response);
         }
     };
-    let formRef: any;
     const clearQuery = () => {
         window.location.reload()
     }
@@ -29,7 +26,7 @@ export const QueryRaceResults = () => {
         <Container>
             <Row>
                 <Col>
-                    <form onSubmit={handleSubmit(tryQuery)} ref={(ref) => formRef = ref}>
+                    <form onSubmit={handleSubmit(tryQuery)}> 
                         <div className='row'>
                             <div className='col-5'>
                                 <label htmlFor="temperature" className='text-left'>Temperature:</label>
@@ -61,7 +58,7 @@ export const QueryRaceResults = () => {
                     </form>
                 </Col>
             </Row>
-            {data && request && <RaceResultListDisplay results={data} request={request}/>}
+            {data && request && <RaceResultListDisplay results={data} request={request} refresh={() => handleSubmit(tryQuery)()}/>}
         </Container>
     </div>
 }

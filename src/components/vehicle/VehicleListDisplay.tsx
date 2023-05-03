@@ -1,9 +1,8 @@
-import { Button, Col, Container, OverlayTrigger, Popover, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { VehicleSummary } from './Vehicle';
 import { vehicleApi } from './vehicleApi';
 import { useHistory } from 'react-router-dom';
-import { isConstructorDeclaration } from 'typescript';
 
 
 export const VehicleListDisplay = () => {
@@ -41,7 +40,7 @@ export const VehicleListDisplay = () => {
             <tbody>
                 {vehicles.length !== 0 &&
                     vehicles.map(({ id, name}) => <tr key={id} onClick={openVehicle(id)}>
-                        <td scope="col" className='text-start'>{name}</td>
+                        <td className='text-start'>{name}</td>
                     </tr>)
                 }
             </tbody>

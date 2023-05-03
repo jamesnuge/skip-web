@@ -42,13 +42,13 @@ export const ChassisSetupList = () => {
             </thead>
             <tbody>
                 {data.map(({ id, name, frontSpread, rearSpread, frontCrossmemberHeight, rearCrossmemberHeight, rearSteer, preload }: ChassisSetup) => <tr key={id}>
-                    <td scope="col">{name}</td>
-                    <td scope="col">{frontSpread}</td>
-                    <td scope="col">{rearSpread}</td>
-                    <td scope="col">{frontCrossmemberHeight}</td>
-                    <td scope="col">{rearCrossmemberHeight}</td>
-                    <td scope="col">{rearSteer}</td>
-                    <td scope="col">{preload}</td>
+                    <td>{name}</td>
+                    <td>{frontSpread}</td>
+                    <td>{rearSpread}</td>
+                    <td>{frontCrossmemberHeight}</td>
+                    <td>{rearCrossmemberHeight}</td>
+                    <td>{rearSteer}</td>
+                    <td>{preload}</td>
                 </tr>)
                 }
             </tbody>

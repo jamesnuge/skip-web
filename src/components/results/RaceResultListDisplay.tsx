@@ -1,26 +1,30 @@
 import { Result } from './Results';
-import { Location } from '../location/Location';
-import { Button, Col, Container, Modal, OverlayTrigger, Popover, Row } from 'react-bootstrap';
+import { Button, Modal, Row } from 'react-bootstrap';
 import { RaceRequest } from '../query/QueryRaceResults';
-import { ChassisSetup } from '../chassis/Chassis';
 import { useState } from 'react';
 import { ResultVehicleConfigDisplay } from '../vehicle/display/VehicleDisplay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGears } from '@fortawesome/free-solid-svg-icons';
+import { faFileCirclePlus, faGears } from '@fortawesome/free-solid-svg-icons';
+import { useForm } from 'react-hook-form';
+import { resultApi } from './resultApi';
 
 export interface RaceResultListProps {
     results: Result[];
     request?: RaceRequest;
+    refresh: () => void;
 }
 
-export const RaceResultListDisplay = ({results, request}: RaceResultListProps) => {
+export const RaceResultListDisplay = ({results, request, refresh}: RaceResultListProps) => {
     const [show, setShow] = useState(false);
+    const [showTuneupModal, setShowTuneupModal] = useState(false);
     const [resultId, setResultId] = useState<number | undefined>(undefined)
     const [selectedResult, setSelectedResult] = useState<string | undefined>(undefined)
     const [selectedLocation, setSelectedLocation] = useState<string | undefined>(undefined)
     const [vehicleName, setVehicleName] = useState<string | undefined>(undefined)
+    const {handleSubmit, register} = useForm();
 
     const handleClose = () => setShow(false);
+
     const handleShow = (id: number, name: string, date: string, location: string) => {
         setResultId(id);
         setVehicleName(name);
@@ -28,6 +32,23 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
         setSelectedLocation(location);
         setShow(true);
     }
+
+    const handleTuneupModalClose = () => setShowTuneupModal(false)
+    const handleShowTuneupModal = (id: number) => {
+        setResultId(id)
+        setShowTuneupModal(true)
+    }
+
+    const saveTuneupFile = async (formResult: any) => {
+        await resultApi.addTuneupFile({
+            resultId: resultId!!,
+            tuneupFile: formResult.tuneupFile as string
+        })
+        refresh();
+        setShowTuneupModal(false);
+        setResultId(undefined);
+    }
+
 
     return <Row>
                 <Modal show={show} onHide={handleClose} size="xl">
@@ -47,12 +68,34 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
           </Button>
         </Modal.Footer>
       </Modal>
+      <Modal show={showTuneupModal} onHide={handleTuneupModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            Add tuneup file
+          </Modal.Title>
+        </Modal.Header>
+            <Modal.Body>
+                <form>
+                    <label htmlFor="tuneupFile" className='text-start'>Filename:</label>
+                    <input id="temperature" className='form-control' type="string" {...register("tuneupFile", { required: true })} placeholder="Tuneup File" />
+                </form>
+            </Modal.Body>
+        <Modal.Footer>
+            <Button onClick={handleSubmit(saveTuneupFile)}>
+                Save
+            </Button>
+          <Button variant="secondary" onClick={handleTuneupModalClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
         <table className="table table-striped tableFixHead thead-light">
             <thead className='thead-dark'>
                 <tr>
                     <th scope="col">Date</th>
                     <th scope="col">Location</th>
                     <th scope="col">Vehicle</th>
+                    <th scope="col">Tuneup file</th>
                     <th scope="col">Time<br /> (60", 330", 660", 1320")</th>
                     <th scope="col">Speed<br /> (660", 1320")</th>
                     <th scope="col">Trackmeter</th>
@@ -65,21 +108,19 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
             </thead>
             <tbody>
                 {results.length !== 0 &&
-                    results.map(({ id, datetime, vehicle, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr key={id}>
-                        {/* <td scope="col" className='text-start'>{datetime}</td> */}
+                    results.map(({ id, datetime, vehicle, tuneupFile, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr key={id}>
                         {generateDateCell(datetime)}
-                        {/*{generateLocationCell(location)}*/}
-                        <td scope="col" className='text-start'>{location}</td>
-                        {/*{generateChassisSetupCell(vehicle.chassisSetup)}*/}
-                        <td scope="col" className='text-start'>{vehicle}</td>
-                        <td scope="col" className='text-start'>{sixtyFeetTime}s, {threeThirtyFeetTime}s,  {sixSixtyFeetTime}s,  {quarterMileTime}s</td>
-                        <td scope="col" className='text-start'>{sixSixtyFeetSpeed}mph {quarterMileSpeed}mph</td>
-                        <td scope="col" className='text-start'>{trackmeter} {request && getDiffElement(trackmeter, request.trackmeter)}</td>
-                        <td scope="col" className='text-start'>{trackTemperature}°C {request && getDiffElement(trackTemperature, request.trackTemperature)}</td>
-                        <td scope="col" className='text-start'>{temperature}°C {request && getDiffElement(temperature, request.temperature)}</td>
-                        <td scope="col" className='text-start'>{humidity}% {request && getDiffElement(humidity, request.humidity)}</td>
-                        <td scope="col"><FontAwesomeIcon icon={faGears} onClick={() => handleShow(id, vehicle, new Date(datetime).toDateString() + " " + new Date(datetime).toTimeString().slice(0, 8), location)}/></td>
-                        {request && <td scope="col" className='text-start'>{rank}</td>}
+                        <td className='text-start'>{location}</td>
+                        <td className='text-start'>{vehicle}</td>
+                        {tuneupCell(tuneupFile, () => handleShowTuneupModal(id))}
+                        <td className='text-start'>{sixtyFeetTime}s, {threeThirtyFeetTime}s,  {sixSixtyFeetTime}s,  {quarterMileTime}s</td>
+                        <td className='text-start'>{sixSixtyFeetSpeed}mph {quarterMileSpeed}mph</td>
+                        <td className='text-start'>{trackmeter} {request && getDiffElement(trackmeter, request.trackmeter)}</td>
+                        <td className='text-start'>{trackTemperature}°C {request && getDiffElement(trackTemperature, request.trackTemperature)}</td>
+                        <td className='text-start'>{temperature}°C {request && getDiffElement(temperature, request.temperature)}</td>
+                        <td className='text-start'>{humidity}% {request && getDiffElement(humidity, request.humidity)}</td>
+                        <td><FontAwesomeIcon icon={faGears} onClick={() => handleShow(id, vehicle, new Date(datetime).toDateString() + " " + new Date(datetime).toTimeString().slice(0, 8), location)}/></td>
+                        {request && <td className='text-start'>{rank}</td>}
                     </tr>)
                 }
             </tbody>
@@ -89,63 +130,15 @@ export const RaceResultListDisplay = ({results, request}: RaceResultListProps) =
 
 const generateDateCell = (val: string) => {
     const date = new Date(val)
-    return <td scope="col" className="text-start">{date.toDateString()}<br/>{date.toTimeString().slice(0, 8)}</td>
-}
-
-const generateLocationCell = (location: Location) => {
-    const popover = <Popover id={`popover-basic-${location.id}`}>
-        <Popover.Header as="h3">{location.name}</Popover.Header>
-        <Popover.Body>
-            Altitude: {location.altitude}ft
-        </Popover.Body>
-    </Popover>
-    return <OverlayTrigger trigger="hover" placement="right" overlay={popover}>
-        <td scope="col">
-            {location.name}
-        </td>
-    </OverlayTrigger>
-}
-
-const generateChassisSetupCell = ({ id, name, frontCrossmemberHeight, rearCrossmemberHeight, frontSpread, rearSpread, rearSteer, preload }: ChassisSetup) => {
-    const popover = <Popover id={`popover-basic-chassis-${id}`}>
-        <Popover.Header as="h3">{name}</Popover.Header>
-        <Popover.Body>
-            <Container>
-                <Row>
-                    <Col>
-                        Front Spread: {frontSpread} <br />
-                    </Col>
-                    <Col>
-                        Rear Spread: {rearSpread} <br />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        FCH: {frontCrossmemberHeight} <br />
-                    </Col>
-                    <Col>
-                        RCH:  {rearCrossmemberHeight} <br />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        Rear Steer: {rearSteer} <br />
-                    </Col>
-                    <Col>
-                        Preload: {preload} <br />
-                    </Col>
-                </Row>
-            </Container>
-        </Popover.Body>
-    </Popover>;
-
-    return <OverlayTrigger trigger="hover" placement="right" overlay={popover}>
-        <td scope="col" className="text-start">
-            {name}
-        </td>
-    </OverlayTrigger>;
+    return <td className="text-start">{date.toDateString()}<br/>{date.toTimeString().slice(0, 8)}</td>
 }
 
 const getDiffElement = (a: number, b: number) => {
     return a && <span className='text-danger'>(±{Math.abs(a - b)})</span>;
+}
+
+const tuneupCell = (tuneupFile: string | undefined, openModal: any) => {
+    return !tuneupFile ? <td><span onClick={openModal}>
+         Add <FontAwesomeIcon icon={faFileCirclePlus} />
+    </span></td> : <td><code>{tuneupFile}</code></td>
 }
