@@ -89,10 +89,9 @@ export const AddVehicleMultiStageForm = () => {
                 <div>
                     <Button variant="secondary" onClick={previousStep}>Previous</Button>
                     &nbsp;
-                    <Button onClick={nextStep}>Next</Button>
+                    {step === formStagesMaxIndex ? <Button variant="success" type="submit">Submit</Button> : <Button onClick={nextStep}>Next</Button>}
                 </div>
                 <div>
-                    {step === formStagesMaxIndex && <Button variant="success" type="submit">Submit</Button>}
                 </div>
             </form>
         </FormProvider>

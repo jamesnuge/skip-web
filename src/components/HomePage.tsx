@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { VehicleSummary } from "./vehicle/Vehicle"
-import { ButtonGroup, Container, Dropdown, ListGroup } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Container, Dropdown, ListGroup } from "react-bootstrap";
 import { vehicleApi } from "./vehicle/vehicleApi";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 
@@ -22,9 +22,11 @@ export const Homepage = () => {
     return <Container>
         <h3>Welcome!</h3>
         <p>Select a vehicle or select an action from the dropdown menu to get started</p>
-        <ListGroup as="ol" numbered>
+        <ListGroup as="ol" >
             {vehicles.map((summary) => generateVehicleListItem(summary, push))}
         </ListGroup>
+        <br/>
+            <ListGroup.Item as="li" onClick={() => push('/vehicle/create')} className="d-flex justify-content-between align-items-start"><div></div><ButtonGroup><Button>Add Vehicle <FontAwesomeIcon icon={faPlus} /></Button></ButtonGroup></ListGroup.Item>
     </Container>
 }
 

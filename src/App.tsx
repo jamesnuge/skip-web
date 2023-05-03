@@ -19,7 +19,7 @@ import { Homepage } from './components/HomePage';
 
 export const fetchTokenFromStorage = () => localStorage.getItem('authToken') || '';
 
-const storeToken = (token: string) => {
+export const storeToken = (token: string) => {
   localStorage.setItem('authToken', token);
 }
 
