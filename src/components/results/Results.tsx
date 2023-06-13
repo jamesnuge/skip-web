@@ -52,7 +52,7 @@ export const VehicleResults = ({vehicleId, limit}: any) => {
     }
     useEffect(() => {
         handleFetchData()
-    })
+    }, [])
     return <div>
         <h3>Results</h3>
         <RaceResultListDisplay results={data} refresh={() => handleFetchData()}/>

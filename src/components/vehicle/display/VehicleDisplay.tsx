@@ -94,13 +94,13 @@ export const VehicleDisplay = () => {
     }
     useEffect(() => {
         fetchVehicle();
-    })
+    }, [])
     return <>
         {!vehicle ? "Loading..." :
             <Container>
                 <h3 className="vehicle-name">{vehicle.name}</h3>
                 <Tabs className="mb-3">
-                    {tabList.map(({ key, title, node }) => <Tab eventKey={key} title={title}>
+                    {tabList.map(({ key, title, node }) => <Tab key={key} eventKey={key} title={title}>
                         {node(vehicle!, true)}
                     </Tab>)}
                 </Tabs>

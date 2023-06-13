@@ -20,5 +20,8 @@ export const vehicleApi = {
     get: async (id: number) => {
         const response = await secureApi.get(`vehicle/${id}`);
         return await response.json() as Vehicle 
+    },
+    archiveVehicle: async (id: number) => {
+        await secureApi.put(`vehicle/archive/${id}`, {})
     }
 }
