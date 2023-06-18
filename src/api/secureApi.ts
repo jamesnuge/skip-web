@@ -1,8 +1,8 @@
-import { fetchTokenFromStorage, storeToken } from "../App"
+import { fetchTokenFromStorage, storeToken } from '../App'
 
 export const secureApi = {
     post: async (path: string, body: any, ) => {
-        const response = await fetch(`/api/${path}`, {
+        const response = await fetch(`/api/ui/${path}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ export const secureApi = {
         return handleResponse(response);
     },
     put: async (path: string, body: any, ) => {
-        const response = await fetch(`/api/${path}`, {
+        const response = await fetch(`/api/ui/${path}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ export const secureApi = {
         return handleResponse(response);
     },
     get: async (path: string) => {
-        const response = await fetch(`/api/${path}`, {
+        const response = await fetch(`/api/ui/${path}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

@@ -2,7 +2,7 @@
 import { fetchTokenFromStorage } from '../../App';
 import { ChassisSetup } from './Chassis';
 
-const baseUrl = '/api/vehicle/chassis'
+const baseUrl = '/api/ui/vehicle/chassis'
 
 export const chassisApi = {
     getAll: async () => {

@@ -11,7 +11,7 @@ export const NewLocation = () => {
     const [successMessage, setSuccessMessage] = useState<String | undefined>(undefined)
     const createLocation = (value: object) => {
         if (isLocation(value)) {
-            fetch(`/api/location/create`, {
+            fetch(`/api/ui/location/create`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
