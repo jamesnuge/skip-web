@@ -10,6 +10,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { startLineApi } from "../startLine/startLineApi";
 import { VehicleModalForm } from "../../vehicle/display/VehicleDisplay";
 import _ from "lodash";
+import { SplitColumn, SplitContainer, TimeColumn, TimeRow } from "./AddResults.styled";
 
 export const AddResult = () => {
     const preselectedVehicleId = useParams<any>().vehicleId;
@@ -47,13 +48,15 @@ export const AddResult = () => {
 
     const watchVehicleId = watch("vehicleId")
 
+    const watchTimes = watch(["sixtyFeetTime", "threeThirtyFeetTime", "sixSixtyFeetTime", "quarterMileTime"]).map((value) => Number.parseFloat(value))
+    
+
     const updateFormWithVehicleDetails = (vehicle: Vehicle | undefined) => {
         if (vehicle !== undefined) {
             Object.keys(vehicle).forEach((key: any) => {
                 const value: any = (vehicle as any)[key]
                 if (_.isObject(value)) {
                     delete (value as any).id
-                    console.log(JSON.stringify(value, null, 2))
                     setValue(key, value)
                 }
             })
@@ -206,18 +209,59 @@ export const AddResult = () => {
                     <Col>
                         <Card>
                             <Card.Header>Times</Card.Header>
-                            <Card.Body>
+                            {/* <Card.Body> */}
+
                                 <Form.Group >
-                                    <label htmlFor="sixtyFeetTime" className='text-start'>Time to 60ft (s):</label>
-                                    <input id="sixtyFeetTime" className='form-control' step='0.0001' type="number" {...register("sixtyFeetTime", { required: true })} placeholder="Time to 60ft" />
-                                    <label htmlFor="threeThirtyFeetTime" className='text-start'>Time to 330ft (s):</label>
-                                    <input id="threeThirtyFeetTime" className='form-control' step='0.0001' type="number" {...register("threeThirtyFeetTime", { required: true })} placeholder="Time to 330ft" />
-                                    <label htmlFor="sixSixtyFeetTime" className='text-start'>Time to 660ft (s):</label>
-                                    <input id="sixSixtyFeetTime" className='form-control' step='0.0001' type="number" {...register("sixSixtyFeetTime", { required: true })} placeholder="Time to 660ft" />
-                                    <label htmlFor="quarterMileTime" className='text-start'>Time to 1320ft (s):</label>
-                                    <input id="quarterMileTime" className='form-control' step='0.0001' type="number" {...register("quarterMileTime", { required: true })} placeholder="Time to 1320ft" />
+                                    <TimeRow>
+                                        <TimeColumn xs={9}>
+                                            <label htmlFor="sixtyFeetTime" className='text-start'>Time to 60ft (s):</label>
+                                            <input id="sixtyFeetTime" className='form-control' step='0.0001' type="number" {...register("sixtyFeetTime", { required: true })} placeholder="Time to 60ft" />
+                                        </TimeColumn>
+                                        <SplitColumn>
+                                            Split<br/>
+                                            <SplitContainer>
+                                                N/A
+                                            </SplitContainer>
+                                        </SplitColumn>
+                                    </TimeRow>
+                                    <TimeRow>
+                                        <TimeColumn xs={9}>
+                                            <label htmlFor="threeThirtyFeetTime" className='text-start'>Time to 330ft (s):</label>
+                                            <input id="threeThirtyFeetTime" className='form-control' step='0.0001' type="number" {...register("threeThirtyFeetTime", { required: true })} placeholder="Time to 330ft" />
+                                        </TimeColumn>
+                                        <SplitColumn>
+                                            <br/> 
+                                            <SplitContainer>
+                                                {generateSplitValue(1, watchTimes)}
+                                            </SplitContainer>
+                                        </SplitColumn>
+                                    </TimeRow>
+                                    <TimeRow>
+                                        <TimeColumn xs={9}>
+                                            <label htmlFor="sixSixtyFeetTime" className='text-start'>Time to 660ft (s):</label>
+                                            <input id="sixSixtyFeetTime" className='form-control' step='0.0001' type="number" {...register("sixSixtyFeetTime", { required: true })} placeholder="Time to 660ft" />
+                                        </TimeColumn>
+                                        <SplitColumn> 
+                                            <br />
+                                            <SplitContainer>
+                                                {generateSplitValue(2, watchTimes)}
+                                            </SplitContainer>
+                                        </SplitColumn>
+                                    </TimeRow>
+                                    <TimeRow>
+                                        <TimeColumn xs={9}>
+                                            <label htmlFor="quarterMileTime" className='text-start'>Time to 1320ft (s):</label>
+                                            <input id="quarterMileTime" className='form-control' step='0.0001' type="number" {...register("quarterMileTime", { required: true })} placeholder="Time to 1320ft" />
+                                        </TimeColumn>
+                                        <SplitColumn>
+                                            <br />
+                                            <SplitContainer>
+                                                {generateSplitValue(3, watchTimes)}
+                                            </SplitContainer>
+                                        </SplitColumn>
+                                    </TimeRow>
                                 </Form.Group>
-                            </Card.Body>
+                            {/* </Card.Body> */}
                         </Card>
                     </Col>
                 </Row>
@@ -244,4 +288,16 @@ export const AddResult = () => {
             </form>
         }
     </>;
+}
+
+const generateSplitValue = (index: number, values: number[]) => {
+    if (index <= 0 || index >= values.length) {
+        return 'N/A';
+    }
+    const currentTime = values[index];
+    const previousTime = values[index - 1];
+    if (isNaN(currentTime) || isNaN(previousTime)) {
+        return '--';
+    }
+    return `${currentTime - previousTime}s`;
 }
