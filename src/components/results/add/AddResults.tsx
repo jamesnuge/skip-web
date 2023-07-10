@@ -292,12 +292,12 @@ export const AddResult = () => {
 
 const generateSplitValue = (index: number, values: number[]) => {
     if (index <= 0 || index >= values.length) {
-        return 'N/A';
+        return <>N/A</>;
     }
     const currentTime = values[index];
     const previousTime = values[index - 1];
     if (isNaN(currentTime) || isNaN(previousTime)) {
-        return '--';
+        return <>--</>;
     }
-    return `${currentTime - previousTime}s`;
+    return <code>{currentTime - previousTime}s</code>;
 }
