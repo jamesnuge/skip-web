@@ -299,5 +299,7 @@ const generateSplitValue = (index: number, values: number[]) => {
     if (isNaN(currentTime) || isNaN(previousTime)) {
         return <>--</>;
     }
-    return <code>{currentTime - previousTime}s</code>;
+    return <code>{normaliseNumber(currentTime - previousTime)}s</code>;
 }
+
+const normaliseNumber = (val: number) => (val.toPrecision(4) as any)/1
