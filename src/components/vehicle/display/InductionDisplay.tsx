@@ -3,48 +3,39 @@ import { Vehicle } from '../Vehicle';
 import { Fieldset } from './VehicleDisplay';
 
 export const InductionDisplay = ({ induction }: Vehicle) => {
-    const {
-        carburettorSize,
-        turboChargedBrand,
-        turboChargedSize,
-        superChargedBrand,
-        superChargedSize,
-        nitrousKits,
-        proChargerSize
-    } = induction!!
     return <>
-        <Container>
+        {induction && <Container>
             <FormGroup>
                 <Row>
                     <Col>
-                        {carburettorSize && Fieldset(carburettorSize!!, "Carburettor Size", "carburretorSize")}
+                        {induction!.carburettorSize && Fieldset(induction.carburettorSize!!, "Carburettor Size", "carburretorSize")}
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        {turboChargedBrand && Fieldset(turboChargedBrand!!, "Turbo charger brand", "turboChargedBrand")}
+                        {induction!.turboChargedBrand && Fieldset(induction!.turboChargedBrand!!, "Turbo charger brand", "turboChargedBrand")}
                     </Col>
                     <Col>
-                        {turboChargedSize && Fieldset(turboChargedSize!!, "Turbo charger size", "turboChargedSize")}
+                        {induction!.turboChargedSize && Fieldset(induction!.turboChargedSize!!, "Turbo charger size", "turboChargedSize")}
                     </Col>
                     </Row>
                 <Row>
                     <Col>
-                        {superChargedBrand && Fieldset(superChargedBrand!!, "Super charger brand", "superChargedBrand")}
+                        {induction!.superChargedBrand && Fieldset(induction!.superChargedBrand!!, "Super charger brand", "superChargedBrand")}
                     </Col>
                     <Col>
-                        {superChargedSize && Fieldset(superChargedSize!!, "Super charger size", "superChargedSize")}
+                        {induction!.superChargedSize && Fieldset(induction!.superChargedSize!!, "Super charger size", "superChargedSize")}
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        {nitrousKits && Fieldset(nitrousKits!!, "Nitrous Kits", "nitrousKits")}
+                        {induction!.nitrousKits && Fieldset(induction!.nitrousKits!!, "Nitrous Kits", "nitrousKits")}
                     </Col>
                     <Col>
-                        {proChargerSize && Fieldset(proChargerSize!!, "Pro Charger Size", "proChargerSize")}
+                        {induction!.proChargerSize && Fieldset(induction!.proChargerSize!!, "Pro Charger Size", "proChargerSize")}
                     </Col>
                 </Row>
             </FormGroup>
-        </Container>
+        </Container>}
     </>
 }

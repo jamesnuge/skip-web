@@ -3,32 +3,26 @@ import { Vehicle } from '../Vehicle';
 import { Fieldset } from './VehicleDisplay';
 
 export const EngineDisplay = ({ engine }: Vehicle) => {
-    const {
-        stroke,
-        bore,
-        brand,
-        cubicInch
-    } = engine!!
     return <>
-        <Container>
+        {engine && <Container>
             <FormGroup>
                 <Row>
                     <Col>
-                        {brand && Fieldset(brand!!, "Brand", "brand")}
+                        {engine!.brand && Fieldset(engine.brand!!, "Brand", "brand")}
                     </Col>
                     <Col>
-                        {cubicInch && Fieldset(cubicInch!!, "Cubic Inch", "cubicInch")}
+                        {engine!.cubicInch && Fieldset(engine.cubicInch!!, "Cubic Inch", "cubicInch")}
                     </Col>
                     </Row>
                 <Row>
                     <Col>
-                        {bore && Fieldset(bore!!, "Bore", "bore")}
+                        {engine!.bore && Fieldset(engine.bore!!, "Bore", "bore")}
                     </Col>
                     <Col>
-                        {stroke && Fieldset(stroke!!, "Stroke", "stroke")}
+                        {engine!.stroke && Fieldset(engine.stroke!!, "Stroke", "stroke")}
                     </Col>
                 </Row>
             </FormGroup>
-        </Container>
+        </Container>}
     </>
 }
