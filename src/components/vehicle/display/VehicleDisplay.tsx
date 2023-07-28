@@ -23,6 +23,8 @@ import { WheelieBarsForm } from '../add/WheelieBarForm';
 import { StartLineForm } from '../add/StartLineForm';
 import { resultApi } from '../../results/resultApi';
 import { ResultVehicleConfig, VehicleResults } from '../../results/Results';
+import { InductionDisplay } from './InductionDisplay';
+import { EngineDisplay } from './EngineDisplay';
 
 export interface VehicleDisplayParams {
     id: string | undefined;
@@ -74,6 +76,16 @@ const tabList: TabConfiguration[] = [
         key: "wheelieBars",
         title: "Wheelie Bars",
         node: WheelieBarsDisplay
+    },
+    {
+        key: "induction",
+        title: "Induction",
+        node: InductionDisplay
+    },
+    {
+        key: "engine",
+        title: "Engine",
+        node: EngineDisplay
     }
 ]
 

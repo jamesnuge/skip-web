@@ -1,28 +1,29 @@
-import { ReactNode, useState } from "react"
-import { Button, Container, ProgressBar, Toast, ToastContainer } from "react-bootstrap"
-import { FormProvider, useForm } from "react-hook-form"
-import { SuspensionForm } from "./SuspensionForm"
-import { WeightForm } from "./WeightForm"
+
+import { ReactNode, useState } from 'react'
+import { Button, Container, ProgressBar, Toast, ToastContainer } from 'react-bootstrap'
+import { FormProvider, useForm } from 'react-hook-form'
+import { SuspensionForm } from './SuspensionForm'
+import { WeightForm } from './WeightForm'
 import './AddVehicleForm.css'
-import { TransmissionForm } from "./TransmissionForm"
-import { TyresAndRimsForm } from "./TyresAndRimsForm"
-import { ConverterForm } from "./ConverterForm"
-import { WheelieBarsForm } from "./WheelieBarForm"
-import { ChassisForm } from "./ChassisForm"
-import { ClutchForm } from "./ClutchForm"
-import { VehicleForm } from "./VehicleForm"
-import { vehicleApi } from "../vehicleApi"
-import { Vehicle } from "../Vehicle"
-import { useHistory } from "react-router-dom"
-import { EngineForm } from "./EngineForm"
-import { InductionForm } from "./InductionForm"
+import { TransmissionForm } from './TransmissionForm'
+import { TyresAndRimsForm } from './TyresAndRimsForm'
+import { ConverterForm } from './ConverterForm'
+import { WheelieBarsForm } from './WheelieBarForm'
+import { ChassisForm } from './ChassisForm'
+import { ClutchForm } from './ClutchForm'
+import { VehicleForm } from './VehicleForm'
+import { vehicleApi } from '../vehicleApi'
+import { Vehicle } from '../Vehicle'
+import { useHistory } from 'react-router-dom'
+import { InductionForm } from './InductionForm'
+import { EngineForm } from './EngineForm'
 
 const formStages: ReactNode[] = [
     <VehicleForm/>,
     <WeightForm />,
+    <SuspensionForm />,
     <EngineForm/>,
     <InductionForm/>,
-    <SuspensionForm />,
     <TransmissionForm />,
     <TyresAndRimsForm />,
     <ConverterForm />,
@@ -30,25 +31,13 @@ const formStages: ReactNode[] = [
     <ChassisForm/>,
     <ClutchForm/>
 ]
-const formStagesMaxIndex = formStages.length - 1;
 
-export const AddVehicleMultiStageForm = () => {
-    const [step, setStep] = useState(0)
-    const [name, setName] = useState<string | undefined>(undefined)
+export const AddVehicleSinglePage = () => {
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
     const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
     const form = useForm();
     const history = useHistory();
     const watchName = form.watch("name");
-    const currentStep = step + 1
-    const numberOfSteps = formStagesMaxIndex + 1
-    const currentStepProgress = currentStep/numberOfSteps * 100
-
-    const nextStep = () => {
-        setName(watchName)
-        setStep(Math.min(step + 1, formStagesMaxIndex))
-    }
-    const previousStep = () => setStep(Math.max(step - 1, 0))
     const saveVehicle = (vehicle: unknown) => {
         console.log(vehicle)
         // TODO: Fix casting by adding typesafe validation
@@ -83,21 +72,17 @@ export const AddVehicleMultiStageForm = () => {
         </ToastContainer>
         <FormProvider {...form}>
             <h3>Add Vehicle</h3>
-            {name && <h4>{name}</h4>}
-            <ProgressBar now={currentStepProgress} label={`${currentStep}/${numberOfSteps}`} />
+            {watchName && <h4>{watchName}</h4>}
             <br/>
             <form onSubmit={form.handleSubmit(saveVehicle)}>
-                <div>{formStages[step]}</div>
+                <div>{formStages}</div>
                 <br />
                 <div>
-                    <Button variant="secondary" onClick={previousStep}>Previous</Button>
-                    &nbsp;
-                    {step === formStagesMaxIndex ? <Button variant="success" type="submit">Submit</Button> : <Button onClick={nextStep}>Next</Button>}
-                </div>
-                <div>
+                    {<Button variant="success" type="submit">Submit</Button>}
                 </div>
             </form>
         </FormProvider>
+        <br/>
     </Container>
 
 }

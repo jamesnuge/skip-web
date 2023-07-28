@@ -16,6 +16,7 @@ import { VehicleListDisplay } from './components/vehicle/VehicleListDisplay';
 import { AddVehicleMultiStageForm } from './components/vehicle/add/AddVehicleForm';
 import { VehicleDisplay } from './components/vehicle/display/VehicleDisplay';
 import { Homepage } from './components/HomePage';
+import { AddVehicleSinglePage } from './components/vehicle/add/SinglePageAddVehicle';
 
 export const fetchTokenFromStorage = () => localStorage.getItem('authToken') || '';
 
@@ -56,6 +57,9 @@ const App = () => {
           </Route>
           <Route path='/vehicle/create'>
             <AddVehicleMultiStageForm />
+          </Route>
+          <Route path='/vehicle/newCreate'>
+            <AddVehicleSinglePage />
           </Route>
           <Route path='/vehicle/:id'>
             <VehicleDisplay />

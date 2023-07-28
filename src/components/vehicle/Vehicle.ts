@@ -13,7 +13,9 @@ export interface Vehicle extends VehicleSummary {
     transmission: Transmission,
     weight: Weight,
     tyresAndRims: TyresAndRims,
-    wheelieBars: WheelieBars
+    wheelieBars: WheelieBars,
+    induction?: Induction,
+    engine?: Engine
 }
 
 export interface Clutch {
@@ -77,4 +79,24 @@ export interface WheelieBars {
     length: number,
     height: number,
     stagger: number
+}
+
+export interface Induction {
+    id?: number;
+    carburettorSize?: number;
+    turboChargedBrand?: string;
+    turboChargedSize?: number;
+    superChargedBrand?: string;
+    superChargedSize?: number;
+    nitrousKits?: number;
+    proChargerSize?: string;
+}
+
+
+export interface Engine {
+    id?: number;
+    brand?: string;
+    cubicInch?: number;
+    bore?: number;
+    stroke?: string;
 }
