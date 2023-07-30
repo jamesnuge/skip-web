@@ -191,7 +191,7 @@ const formTabList: TabConfiguration[] = [
     {
         key: "weight",
         title: "Weight",
-        node: WeightForm
+        node: TransmissionForm
     },
     {
         key: "wheelieBars",
