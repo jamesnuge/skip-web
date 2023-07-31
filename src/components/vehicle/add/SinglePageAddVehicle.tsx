@@ -1,41 +1,18 @@
 
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Accordion, Button, Col, Container, Dropdown, DropdownButton, ProgressBar, Row, Toast, ToastContainer } from 'react-bootstrap'
 import { FormProvider, useForm } from 'react-hook-form'
-import { SuspensionForm } from './SuspensionForm'
-import { WeightForm } from './WeightForm'
 import './AddVehicleForm.css'
-import { TransmissionForm } from './TransmissionForm'
-import { TyresAndRimsForm } from './TyresAndRimsForm'
-import { ConverterForm } from './ConverterForm'
-import { WheelieBarsForm } from './WheelieBarForm'
-import { ChassisForm } from './ChassisForm'
-import { ClutchForm } from './ClutchForm'
-import { VehicleForm } from './VehicleForm'
 import { TemplateMap, vehicleApi } from '../vehicleApi'
 import { Vehicle } from '../Vehicle'
 import { useHistory } from 'react-router-dom'
-import { InductionForm } from './InductionForm'
-import { EngineForm } from './EngineForm'
+import { VehicleSectionForm } from './VehicleSectionForm'
 
-
-const formStages: ((list: string[], displayAllFields: boolean, index: number) => ReactNode)[] = [
-    (schema, displayAllFields, index) => <VehicleForm schema={schema} displayAllFields={displayAllFields} index={index}/>,
-    (list, displayAllFields, index) => <WeightForm schema={list} displayAllFields={displayAllFields} index={index}/>,
-    () => <SuspensionForm />,
-    () => <EngineForm />,
-    () => <InductionForm />,
-    () => <TransmissionForm />,
-    () => <TyresAndRimsForm />,
-    () => <ConverterForm />,
-    () => <WheelieBarsForm />,
-    () => <ChassisForm />,
-    () => <ClutchForm />
-]
 
 export const AddVehicleSinglePage = () => {
     const [templates, setTemplates] = useState<TemplateMap | undefined>(undefined)
     const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>(undefined)
+    const [schema, setSchema] = useState<any | undefined>(undefined)
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
     const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
     const form = useForm();
@@ -45,7 +22,7 @@ export const AddVehicleSinglePage = () => {
     const handleFetchData = async () => {
         const response = await vehicleApi.getTemplates()
         const schema = await vehicleApi.getSchema()
-        console.log(schema);
+        setSchema(schema);
         setTemplates(response);
     }
 
@@ -54,28 +31,32 @@ export const AddVehicleSinglePage = () => {
     }, []);
 
     const saveVehicle = (vehicle: unknown) => {
-        vehicleApi.create(vehicle as Vehicle).then(
-            () => {
-                setErrorMessage(undefined);
-                setSuccessMessage(`Successfully saved chassis`);
-                history.push("/vehicle/all")
-            },
-            (err) => {
-                setSuccessMessage(undefined);
-                setErrorMessage("Unable to save location, ensure all fields are present and correct");
-                console.error(err);
-            }
-        )
+        console.log(vehicle);
+        // vehicleApi.create(vehicle as Vehicle).then(
+        //     () => {
+        //         setErrorMessage(undefined);
+        //         setSuccessMessage(`Successfully saved chassis`);
+        //         history.push("/vehicle/all")
+        //     },
+        //     (err) => {
+        //         setSuccessMessage(undefined);
+        //         setErrorMessage("Unable to save location, ensure all fields are present and correct");
+        //         console.error(err);
+        //     }
+        // )
     }
 
-    const getTemplateFields = (templateName: string | undefined) => {
-        if (!templateName || !templates) {
-            return []
-        } else {
-            return templates[templateName]
-        }
-    }
-
+    const schemaRenderProps = (schema ? Object.keys(schema.properties) : []).filter((key) => schema.properties[key].type == 'object')
+         .map((key, index) => {
+                        return {
+                            schema: schema.properties[key],
+                            index: index+1,
+                            section: key,
+                            templateFields: templates && selectedTemplate ? getTemplateFieldsForSection(key, templates[selectedTemplate]): undefined
+                        }
+                    })
+    const activeEventKeys = calculateActiveEventKeys(schemaRenderProps, !!selectedTemplate);
+    
     return <Container>
         <ToastContainer className="p-3" position='top-end'>
             <Toast bg="success" show={successMessage !== undefined} onClose={() => setSuccessMessage(undefined)}>
@@ -107,9 +88,12 @@ export const AddVehicleSinglePage = () => {
             {watchName && <h4>{watchName}</h4>}
             <br />
             <form onSubmit={form.handleSubmit(saveVehicle)}>
-                <Accordion defaultActiveKey={formStages.map((_, i) => i+"")} alwaysOpen>
-                    {formStages.map((stage, index) => <div>{stage(getTemplateFields(selectedTemplate), !selectedTemplate, index)}</div>)}
+                {schema && <Accordion defaultActiveKey={activeEventKeys} alwaysOpen>
+                    <VehicleSectionForm schema={schema} index={0} templateFields={templates && selectedTemplate ? getTemplateFieldsForSection(undefined, templates[selectedTemplate]) : undefined} />
+                    {schemaRenderProps.filter((props:any) => (props.templateFields && props.templateFields.length > 0) || !selectedTemplate)
+                        .map((props, index) => <VehicleSectionForm schema={props.schema} section={props.section} index={index} templateFields={props.templateFields} />)}
                 </Accordion>
+                }
                 <br />
                 <div>
                     {<Button variant="success" type="submit">Submit</Button>}
@@ -119,4 +103,17 @@ export const AddVehicleSinglePage = () => {
         <br />
     </Container>
 
+}
+
+const getTemplateFieldsForSection = (section: string | undefined, fields: string[]) => fields
+    .filter((i) => section ? i.startsWith(`${section}.`) : i.indexOf('.') == -1)
+    .map((i) => section ? i.substring(section.length + 1) : i)
+
+const calculateActiveEventKeys = (schemaRenderProps: any[], hasTemplate: boolean) => {
+    return schemaRenderProps.map((i, index) => {
+        if (hasTemplate && !i.templateFields) {
+            return "_";
+        }
+        return index + "";
+    }).filter((i) => i != "_")
 }
