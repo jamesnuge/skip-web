@@ -25,6 +25,8 @@ import { resultApi } from '../../results/resultApi';
 import { ResultVehicleConfig, VehicleResults } from '../../results/Results';
 import { InductionDisplay } from './InductionDisplay';
 import { EngineDisplay } from './EngineDisplay';
+import { EngineForm } from '../add/EngineForm';
+import { InductionForm } from '../add/InductionForm';
 
 export interface VehicleDisplayParams {
     id: string | undefined;
@@ -177,6 +179,16 @@ const formTabList: TabConfiguration[] = [
         key: "converter",
         title: "Converter",
         node: ConverterForm
+    },
+    {
+        key: "engine",
+        title: "Engine",
+        node: EngineForm
+    },
+    {
+        key: "induction",
+        title: "Induction",
+        node: InductionForm
     },
     {
         key: "suspension",
