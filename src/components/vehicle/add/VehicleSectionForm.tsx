@@ -1,7 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import { SchemaField } from './WeightForm';
 import { Accordion, Col, Form, Row } from 'react-bootstrap';
-import _ from 'lodash';
 
 export interface VehicleSectionProps {
     schema: any,
@@ -18,11 +17,11 @@ export const VehicleSectionForm = ({schema, index, section, templateFields}: Veh
     const registerSectionInput = (fieldName: string, props: any) => register((section ? `${section}.` : '') + fieldName, props)
 
     const schemaWeightFields = Object.keys(schema.properties)
-        .filter((key) => !containsValue(ignoredFields, key) && (templateFields == undefined || containsValue(templateFields, key)))
+        .filter((key) => !containsValue(ignoredFields, key) && (templateFields === undefined || containsValue(templateFields, key)))
         .map((key) => {
             return { key, ...schema.properties[key]}
         } )
-        .filter((propertySchema) => propertySchema.type != 'object' && propertySchema.type != 'array')
+        .filter((propertySchema) => propertySchema.type !== 'object' && propertySchema.type !== 'array')
     const body = schemaWeightFields.reduce((acc, _, index, array) => {
         if (index % 2 === 0) {
             acc.push(array.slice(index, Math.max(index+2, array.length)))
@@ -80,4 +79,4 @@ function capitalize(word: string) {
     return word.charAt(0).toUpperCase() + word.substring(1);
 }
 
-const containsValue = (arr: string[], item: string) => arr.indexOf(item) != -1 
+const containsValue = (arr: string[], item: string) => arr.indexOf(item) !== -1 
