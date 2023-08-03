@@ -136,7 +136,7 @@ export const ResultVehicleConfigDisplay = ({id}: any) => {
     }
     useEffect(() => {
         fetchVehicle();
-    });
+    }, []);
     return <>
         {!vehicle ? "Loading..." :
             <>
@@ -219,7 +219,7 @@ export const VehicleModalForm = ({id}: VehicleModalDisplayProps) => {
     }
     useEffect(() => {
         fetchVehicle();
-    })
+    }, [])
     return <>
         {!vehicle ? "Loading..." :
             <>

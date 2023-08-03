@@ -24,7 +24,7 @@ export const InductionForm = () => {
                     </Col>
                     <Col>
                         <label htmlFor="turboChargedSize" className='text-start'>Turbo charger size:</label>
-                        <Form.Control type="number" {...registerEngineInput("turboChargerSize", { required: false })} />
+                        <Form.Control type="number" {...registerEngineInput("turboChargedSize", { required: false })} />
                     </Col>
                     <Col xs={1} />
                 </Row>
@@ -36,7 +36,7 @@ export const InductionForm = () => {
                     </Col>
                     <Col>
                         <label htmlFor="superChargedSize" className='text-start'>Super charger size:</label>
-                        <Form.Control type="number" {...registerEngineInput("superChargerSize", { required: false })} />
+                        <Form.Control type="number" {...registerEngineInput("superChargedSize", { required: false })} />
                     </Col>
                     <Col xs={1} />
                 </Row>
@@ -44,11 +44,11 @@ export const InductionForm = () => {
                     <Col xs={1} />
                     <Col>
                         <label htmlFor="nitrousKits" className='text-start'>Nitrous Kits:</label>
-                        <Form.Control type="number" {...registerEngineInput("superChargedBrand", { required: false })} />
+                        <Form.Control type="number" {...registerEngineInput("nitrousKits", { required: false })} />
                     </Col>
                     <Col>
                         <label htmlFor="proChargerSize" className='text-start'>Pro charger size:</label>
-                        <Form.Control type="text" {...registerEngineInput("superChargerSize", { required: false })} />
+                        <Form.Control type="text" {...registerEngineInput("proChargerSize", { required: false })} />
                     </Col>
                     <Col xs={1} />
                 </Row>
