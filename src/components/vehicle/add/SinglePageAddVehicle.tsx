@@ -53,21 +53,30 @@ export const AddVehicleSinglePage = () => {
 
     const setTemplateAndUnregisterFields = (templateName: string) => {
         setSelectedTemplate(templateName);
-        allFields.filter((field) => templates![templateName].indexOf(field) == -1)
+        allFields.filter((field) => templateName && templates![templateName].indexOf(field) == -1)
             .forEach((field) => form.unregister(field));
     }
 
+    const clearTemplate = () => {
+        const currentTemplate = selectedTemplate;
+        setSelectedTemplate(undefined);
+        allFields.filter((field) => templates![currentTemplate!].indexOf(field) == -1)
+            .forEach((field) => {
+                form.register(field);
+            });
+    };
+
     const schemaRenderProps = (schema ? Object.keys(schema.properties) : []).filter((key) => schema.properties[key].type == 'object')
-         .map((key, index) => {
-                        return {
-                            schema: schema.properties[key],
-                            index: index+1,
-                            section: key,
-                            templateFields: templates && selectedTemplate ? getTemplateFieldsForSection(key, templates[selectedTemplate]): undefined
-                        }
-                    })
+        .map((key, index) => {
+            return {
+                schema: schema.properties[key],
+                index: index + 1,
+                section: key,
+                templateFields: templates && selectedTemplate ? getTemplateFieldsForSection(key, templates[selectedTemplate]) : undefined
+            }
+        })
     const activeEventKeys = calculateActiveEventKeys(schemaRenderProps, !!selectedTemplate);
-    
+
     return <Container>
         <ToastContainer className="p-3" position='top-end'>
             <Toast bg="success" show={successMessage !== undefined} onClose={() => setSuccessMessage(undefined)}>
@@ -86,14 +95,15 @@ export const AddVehicleSinglePage = () => {
         <FormProvider {...form}>
             <h3>Add Vehicle</h3>
             <Row>
-                <Col xs={10} />
+                <Col xs={9} />
                 <Col>
                     Build vehicle based on template:
                     <DropdownButton id="dropdown-basic-button" title={selectedTemplate || 'Templates'}>
-                    {templates && Object.keys(templates).map((template) => {
-                        return <Dropdown.Item onClick={() => setTemplateAndUnregisterFields(template)}>{template}</Dropdown.Item>
-                    })}
-    </DropdownButton>
+                        {templates && Object.keys(templates).map((template) => {
+                            return <Dropdown.Item onClick={() => setTemplateAndUnregisterFields(template)}>{template}</Dropdown.Item>
+                        })}
+                    </DropdownButton>
+                    {selectedTemplate && <Button variant="danger" onClick={clearTemplate}>Clear template</Button>}
                 </Col>
             </Row>
             {watchName && <h4>{watchName}</h4>}
@@ -101,7 +111,7 @@ export const AddVehicleSinglePage = () => {
             <form onSubmit={form.handleSubmit(saveVehicle)}>
                 {schema && <Accordion defaultActiveKey={activeEventKeys} alwaysOpen>
                     <VehicleSectionForm schema={schema} index={0} templateFields={templates && selectedTemplate ? getTemplateFieldsForSection(undefined, templates[selectedTemplate]) : undefined} />
-                    {schemaRenderProps.filter((props:any) => (props.templateFields && props.templateFields.length > 0) || !selectedTemplate)
+                    {schemaRenderProps.filter((props: any) => (props.templateFields && props.templateFields.length > 0) || !selectedTemplate)
                         .map((props, index) => <VehicleSectionForm schema={props.schema} section={props.section} index={index} templateFields={props.templateFields} />)}
                 </Accordion>
                 }
