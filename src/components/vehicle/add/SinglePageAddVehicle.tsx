@@ -1,22 +1,25 @@
 
 import { useEffect, useState } from 'react'
-import { Accordion, Button, Col, Container, Dropdown, DropdownButton, ProgressBar, Row, Toast, ToastContainer } from 'react-bootstrap'
+import { Accordion, Button, Col, Container, Dropdown, DropdownButton, Toast, ToastContainer } from 'react-bootstrap'
 import { FormProvider, useForm } from 'react-hook-form'
 import './AddVehicleForm.css'
 import { TemplateMap, vehicleApi } from '../vehicleApi'
 import { useHistory } from 'react-router-dom'
 import { VehicleSectionForm } from './VehicleSectionForm'
-import _ from 'lodash'
 import { Vehicle } from '../Vehicle'
+import { AddFieldModal } from '../newAdd/AddFieldsModal'
+import _ from 'lodash'
 
 
 export const AddVehicleSinglePage = () => {
     const [templates, setTemplates] = useState<TemplateMap | undefined>(undefined)
     const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>(undefined)
+    const [customFields, setCustomFields] = useState<string[]>([]);
     const [schema, setSchema] = useState<any | undefined>(undefined)
     const [allFields, setAllFields] = useState<string[]>([])
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
     const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
+    const [show, setShow] = useState<boolean>(false);
     const form = useForm();
     const history = useHistory();
     const watchName = form.watch("name");
@@ -27,8 +30,6 @@ export const AddVehicleSinglePage = () => {
         setSchema(schema);
         setTemplates(response);
         setAllFields(getAllFields(schema))
-        // console.log('+++ Schema fields +++')
-        // console.log(getAllFields(schema))
     }
 
     useEffect(() => {
@@ -53,20 +54,29 @@ export const AddVehicleSinglePage = () => {
 
     const setTemplateAndUnregisterFields = (templateName: string) => {
         setSelectedTemplate(templateName);
-        allFields.filter((field) => templateName && templates![templateName].indexOf(field) == -1)
+        allFields.filter((field) => templateName && templates![templateName].indexOf(field) === -1)
             .forEach((field) => form.unregister(field));
     }
 
     const clearTemplate = () => {
         const currentTemplate = selectedTemplate;
         setSelectedTemplate(undefined);
-        allFields.filter((field) => templates![currentTemplate!].indexOf(field) == -1)
+        allFields.filter((field) => templates![currentTemplate!].indexOf(field) === -1)
             .forEach((field) => {
                 form.register(field);
             });
     };
 
-    const schemaRenderProps = (schema ? Object.keys(schema.properties) : []).filter((key) => schema.properties[key].type == 'object')
+    const handleClose = () => {
+        setShow(false);
+    }
+
+    const handleSave = (customFieldsToAdd: string[]) => {
+        setCustomFields(customFieldsToAdd);
+        setShow(false);
+    }
+
+    const schemaRenderProps = (schema ? Object.keys(schema.properties) : []).filter((key) => schema.properties[key].type === 'object')
         .map((key, index) => {
             return {
                 schema: schema.properties[key],
@@ -74,7 +84,7 @@ export const AddVehicleSinglePage = () => {
                 section: key,
                 templateFields: templates && selectedTemplate ? getTemplateFieldsForSection(key, templates[selectedTemplate]) : undefined
             }
-        })
+        });
     const activeEventKeys = calculateActiveEventKeys(schemaRenderProps, !!selectedTemplate);
 
     return <Container>
@@ -92,9 +102,10 @@ export const AddVehicleSinglePage = () => {
                 <Toast.Body>Unable to save result. Please check all values are present and correct</Toast.Body>
             </Toast>
         </ToastContainer>
+        {show && <AddFieldModal vehicleSchema={schema} currentFields={templates![selectedTemplate!]} show={show} handleSave={(value: any) => console.log(value)} handleClose={() => setShow(false)}/>}
         <FormProvider {...form}>
             <h3>Add Vehicle</h3>
-            <Row>
+            <Container fluid>
                 <Col xs={9} />
                 <Col>
                     Build vehicle based on template:
@@ -104,8 +115,9 @@ export const AddVehicleSinglePage = () => {
                         })}
                     </DropdownButton>
                     {selectedTemplate && <Button variant="danger" onClick={clearTemplate}>Clear template</Button>}
+                    {selectedTemplate && <Button onClick={() => setShow(true)}>Add extra fields</Button>}
                 </Col>
-            </Row>
+            </Container>
             {watchName && <h4>{watchName}</h4>}
             <br />
             <form onSubmit={form.handleSubmit(saveVehicle)}>
@@ -127,7 +139,7 @@ export const AddVehicleSinglePage = () => {
 }
 
 const getTemplateFieldsForSection = (section: string | undefined, fields: string[]) => fields
-    .filter((i) => section ? i.startsWith(`${section}.`) : i.indexOf('.') == -1)
+    .filter((i) => section ? i.startsWith(`${section}.`) : i.indexOf('.') === -1)
     .map((i) => section ? i.substring(section.length + 1) : i)
 
 const calculateActiveEventKeys = (schemaRenderProps: any[], hasTemplate: boolean) => {
@@ -136,14 +148,14 @@ const calculateActiveEventKeys = (schemaRenderProps: any[], hasTemplate: boolean
             return "_";
         }
         return index + "";
-    }).filter((i) => i != "_")
+    }).filter((i) => i !== "_")
 }
 
 const fieldsToIgnore = ['id', 'archived']
 
 const getAllFields: (schema: any, key?: string) => string[] = (schema: any, key?: string) => {
     return _.flatMap(Object.keys(schema.properties), (propertyName) => {
-        if (fieldsToIgnore.indexOf(propertyName) != -1) {
+        if (fieldsToIgnore.indexOf(propertyName) !== -1) {
             return [];
         }
         const property = schema.properties[propertyName]

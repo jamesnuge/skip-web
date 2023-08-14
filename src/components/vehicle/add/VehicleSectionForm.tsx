@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { SchemaField } from './WeightForm';
 import { Accordion, Col, Form, Row } from 'react-bootstrap';
+import { toCapitalizedWords } from '../../../util/StringUtil';
 
 export interface VehicleSectionProps {
     schema: any,
@@ -64,19 +65,6 @@ const matchSchemaTypeToFormType = (schemaType: string) => {
         default:
             return 'text';
     }
-}
-
-function toCapitalizedWords(name?: string) {
-    if (!name) {
-        return undefined
-    }
-    var words = name.match(/[A-Za-z][a-z]*/g) || [];
-
-    return words.map(capitalize).join(' ');
-}
-
-function capitalize(word: string) {
-    return word.charAt(0).toUpperCase() + word.substring(1);
 }
 
 const containsValue = (arr: string[], item: string) => arr.indexOf(item) !== -1 
