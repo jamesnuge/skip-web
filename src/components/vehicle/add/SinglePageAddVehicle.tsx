@@ -9,7 +9,7 @@ import { VehicleSectionForm } from './VehicleSectionForm'
 import { Vehicle } from '../Vehicle'
 import { AddFieldModal } from '../newAdd/AddFieldsModal'
 import _ from 'lodash'
-import { FlexContainer, LeftCol, RightCol } from './SinglePageAddVehicle.styled'
+import { LeftCol, RightCol } from './SinglePageAddVehicle.styled'
 
 
 export const AddVehicleSinglePage = () => {
@@ -183,7 +183,6 @@ export const AddVehicleSinglePage = () => {
                     </DropdownButton>
                 </RightCol>
             </Row>
-            {watchName && <h4>{watchName}</h4>}
             <br />
                 {schema && <Accordion defaultActiveKey={activeEventKeys} alwaysOpen>
                     <VehicleSectionForm schema={schema} index={0} templateFields={getTemplateFieldsForSection(undefined, ["name"])} />
