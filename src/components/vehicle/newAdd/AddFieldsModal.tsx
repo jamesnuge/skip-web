@@ -39,12 +39,13 @@ export const AddFieldModal = ({ show, handleClose, handleSave, vehicleSchema, cu
 }
 
 const flattenFields = (fieldMap: any, currentFields: string[]) => {
-  return Object.entries(fieldMap).flatMap(([key, value]: [string, any]) => {
+  const fieldsToAdd = Object.entries(fieldMap).flatMap(([key, value]: [string, any]) => {
     return Object.entries(value)
       .map(([innerKey, innerValue]) => [`${key}.${innerKey}`, innerValue])
-      .filter(([fieldKey, innerValue]) => (innerValue && !containsValue(currentFields, fieldKey as any) || (!innerValue && containsValue(currentFields, fieldKey as any))))
+      .filter(([_, innerValue]) => innerValue)
       .map(([fieldKey, _]) => fieldKey)
-  })
+  });
+  return fieldsToAdd.concat(currentFields.filter((field) => containsValue(fieldsToAdd as string[], field)));
 }
 
 const ignoredFields = ['id', 'archived']

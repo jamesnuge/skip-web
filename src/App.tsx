@@ -56,9 +56,6 @@ const App = () => {
             <VehicleListDisplay />
           </Route>
           <Route path='/vehicle/create'>
-            <AddVehicleMultiStageForm />
-          </Route>
-          <Route path='/vehicle/newCreate'>
             <AddVehicleSinglePage />
           </Route>
           <Route path='/vehicle/:id'>
