@@ -1,46 +1,45 @@
 
-import { ReactNode, useState } from 'react'
-import { Button, Container, ProgressBar, Toast, ToastContainer } from 'react-bootstrap'
+import { useEffect, useState } from 'react'
+import { Accordion, Button, Col, Container, Dropdown, DropdownButton, Row, Toast, ToastContainer } from 'react-bootstrap'
 import { FormProvider, useForm } from 'react-hook-form'
-import { SuspensionForm } from './SuspensionForm'
-import { WeightForm } from './WeightForm'
 import './AddVehicleForm.css'
-import { TransmissionForm } from './TransmissionForm'
-import { TyresAndRimsForm } from './TyresAndRimsForm'
-import { ConverterForm } from './ConverterForm'
-import { WheelieBarsForm } from './WheelieBarForm'
-import { ChassisForm } from './ChassisForm'
-import { ClutchForm } from './ClutchForm'
-import { VehicleForm } from './VehicleForm'
-import { vehicleApi } from '../vehicleApi'
-import { Vehicle } from '../Vehicle'
+import { TemplateMap, vehicleApi } from '../vehicleApi'
 import { useHistory } from 'react-router-dom'
-import { InductionForm } from './InductionForm'
-import { EngineForm } from './EngineForm'
+import { VehicleSectionForm } from './VehicleSectionForm'
+import { Vehicle } from '../Vehicle'
+import { AddFieldModal } from '../newAdd/AddFieldsModal'
+import _ from 'lodash'
+import { LeftCol, RightCol } from './SinglePageAddVehicle.styled'
 
-const formStages: ReactNode[] = [
-    <VehicleForm/>,
-    <WeightForm />,
-    <SuspensionForm />,
-    <EngineForm/>,
-    <InductionForm/>,
-    <TransmissionForm />,
-    <TyresAndRimsForm />,
-    <ConverterForm />,
-    <WheelieBarsForm />,
-    <ChassisForm/>,
-    <ClutchForm/>
-]
 
 export const AddVehicleSinglePage = () => {
+    const [templates, setTemplates] = useState<TemplateMap | undefined>(undefined)
+    const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>(undefined)
+    const [previouslySelectedTemplate, setPreviouslySelectedTemplate] = useState<string | undefined>(undefined)
+    const [customFields, setCustomFields] = useState<string[]>([]);
+    const [schema, setSchema] = useState<any | undefined>(undefined)
+    const [allFields, setAllFields] = useState<string[]>([])
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
     const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined)
+    const [show, setShow] = useState<boolean>(false);
     const form = useForm();
     const history = useHistory();
     const watchName = form.watch("name");
+
+    const handleFetchData = async () => {
+        const response = await vehicleApi.getTemplates()
+        const schema = await vehicleApi.getSchema()
+        setSchema(schema);
+        setTemplates(response);
+        setAllFields(getAllFields(schema))
+    }
+
+    useEffect(() => {
+        handleFetchData();
+    }, []);
+
     const saveVehicle = (vehicle: unknown) => {
-        console.log(vehicle)
-        // TODO: Fix casting by adding typesafe validation
+        console.log(vehicle);
         vehicleApi.create(vehicle as Vehicle).then(
             () => {
                 setErrorMessage(undefined);
@@ -54,6 +53,106 @@ export const AddVehicleSinglePage = () => {
             }
         )
     }
+
+    const setTemplateAndUnregisterFields = (templateName: string) => {
+        setSelectedTemplate(templateName);
+        allFields.filter((field) => templateName && templates![templateName].indexOf(field) === -1)
+            .forEach((field) => form.unregister(field));
+    }
+
+    const clearTemplate = () => {
+        if (hasTemplate()) {
+            const currentTemplate = selectedTemplate
+            allFields.filter((field) => templates![currentTemplate!].indexOf(field) === -1)
+                .forEach((field) => {
+                    form.register(field);
+                });
+        } else if (hasCustomFields()) {
+            allFields.filter((field) => customFields.indexOf(field) === -1)
+            .forEach(form.register as any)
+        }
+        setSelectedTemplate(undefined);
+        setCustomFields([])
+    };
+
+    const handleClose = () => {
+        setShow(false);
+    }
+
+    const handleSave = (customFieldsToAdd: string[]) => {
+        if (selectedTemplate) {
+            setPreviouslySelectedTemplate(selectedTemplate)
+        }
+        setSelectedTemplate(undefined)
+        setCustomFields(customFieldsToAdd);
+        setShow(false);
+    }
+
+    const hasCustomFields = () => customFields.length > 0
+    const hasTemplate = () => templates && selectedTemplate
+
+    const getCurrentFields = () => {
+        if (hasTemplate()) {
+            return templates![selectedTemplate!]
+        } else if (hasCustomFields()) {
+            return customFields
+        } else {
+            return allFields;
+        }
+    }
+
+    const schemaRenderProps = (schema ? Object.keys(schema.properties) : []).filter((key) => schema.properties[key].type === 'object')
+        .map((key, index) => {
+            return {
+                schema: schema.properties[key],
+                index: index + 1,
+                section: key,
+                templateFields: getTemplateFieldsForSection(key, getCurrentFields())
+            }
+        });
+    const activeEventKeys = calculateActiveEventKeys(schemaRenderProps, !!selectedTemplate);
+    const handleTemplateReset = () => {
+        setSelectedTemplate(previouslySelectedTemplate);
+        setCustomFields([])
+        setPreviouslySelectedTemplate(undefined);
+    }
+
+    const getResetButton = () => <Dropdown.Item onClick={() => form.reset()}>Clear all fields</Dropdown.Item>
+
+    const getMenuItems = () => {
+        if (hasTemplate()) {
+            return <>
+                <Dropdown.Item onClick={() => setShow(true)}>Add fields</Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item variant="danger" onClick={clearTemplate}>Remove template</Dropdown.Item>
+                <Dropdown.Divider/>
+                {getResetButton()}
+                </>
+        } else if (hasCustomFields()) {
+            return <>
+                <Dropdown.Item onClick={() => setShow(true)}>Add/Remove fields</Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item variant="danger" onClick={clearTemplate}>Remove template</Dropdown.Item>
+                <Dropdown.Divider/>
+                {getResetButton()}
+            </>
+        } else {
+            return templates ? <>{Object.keys(templates!).map((template) => {
+                            return <Dropdown.Item onClick={() => setTemplateAndUnregisterFields(template)}>{template}</Dropdown.Item>
+                        })}<Dropdown.Divider/>{getResetButton()}</> : <></>
+        }
+    }
+
+    const getTemplateMenuTitle = () => {
+        if (hasTemplate()) {
+            return selectedTemplate
+        } else if (hasCustomFields()) {
+            return previouslySelectedTemplate + "+  "
+        } else {
+            return 'Templates menu'
+        }
+    }
+
 
     return <Container>
         <ToastContainer className="p-3" position='top-end'>
@@ -70,19 +169,55 @@ export const AddVehicleSinglePage = () => {
                 <Toast.Body>Unable to save result. Please check all values are present and correct</Toast.Body>
             </Toast>
         </ToastContainer>
+        {show && <AddFieldModal vehicleSchema={schema} currentFields={templates![selectedTemplate!]} show={show} handleSave={(value: any) => handleSave(value)} handleClose={() => setShow(false)}/>}
         <FormProvider {...form}>
             <h3>Add Vehicle</h3>
-            {watchName && <h4>{watchName}</h4>}
-            <br/>
             <form onSubmit={form.handleSubmit(saveVehicle)}>
-                <div>{formStages}</div>
-                <br />
-                <div>
+            <Row>
+                <LeftCol>
                     {<Button variant="success" type="submit">Submit</Button>}
-                </div>
+                </LeftCol>
+                <RightCol>
+                    <DropdownButton id="dropdown-basic-button" title={getTemplateMenuTitle()}>
+                        {getMenuItems()}
+                    </DropdownButton>
+                </RightCol>
+            </Row>
+            <br />
+                {schema && <Accordion defaultActiveKey={activeEventKeys} alwaysOpen>
+                    <VehicleSectionForm schema={schema} index={0} templateFields={getTemplateFieldsForSection(undefined, ["name"])} />
+                    {schemaRenderProps.filter((props: any) => (props.templateFields && props.templateFields.length > 0))
+                        .map((props, index) => <VehicleSectionForm schema={props.schema} section={props.section} index={index} templateFields={props.templateFields} />)}
+                </Accordion>
+                }
             </form>
         </FormProvider>
-        <br/>
+        <br />
     </Container>
 
+}
+
+const getTemplateFieldsForSection = (section: string | undefined, fields: string[]) => fields
+    .filter((i) => section ? i.startsWith(`${section}.`) : i.indexOf('.') === -1)
+    .map((i) => section ? i.substring(section.length + 1) : i)
+
+const calculateActiveEventKeys = (schemaRenderProps: any[], hasTemplate: boolean) => {
+    return schemaRenderProps.map((i, index) => {
+        if (hasTemplate && !i.templateFields) {
+            return "_";
+        }
+        return index + "";
+    }).filter((i) => i !== "_")
+}
+
+const fieldsToIgnore = ['id', 'archived']
+
+const getAllFields: (schema: any, key?: string) => string[] = (schema: any, key?: string) => {
+    return _.flatMap(Object.keys(schema.properties), (propertyName) => {
+        if (fieldsToIgnore.indexOf(propertyName) !== -1) {
+            return [];
+        }
+        const property = schema.properties[propertyName]
+        return property.type === 'object' ? getAllFields(property, `${propertyName}.`) : [`${key || ''}${propertyName}`]
+    });
 }

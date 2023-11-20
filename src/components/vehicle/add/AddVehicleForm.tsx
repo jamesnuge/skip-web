@@ -18,8 +18,8 @@ import { EngineForm } from "./EngineForm"
 import { InductionForm } from "./InductionForm"
 
 const formStages: ReactNode[] = [
-    <VehicleForm/>,
-    <WeightForm />,
+    // <VehicleForm/>,
+    // <WeightForm />,
     <EngineForm/>,
     <InductionForm/>,
     <SuspensionForm />,

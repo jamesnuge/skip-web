@@ -23,5 +23,18 @@ export const vehicleApi = {
     },
     archiveVehicle: async (id: number) => {
         await secureApi.put(`vehicle/archive/${id}`, {})
+    },
+    getTemplates: async () => {
+        const response = await secureApi.get('vehicle/template/all');
+        return await response.json() as TemplateMap
+    },
+    getSchema: async () => {
+        const response = await secureApi.get('vehicle/template/schema');
+        return await response.json()
     }
+
+}
+
+export interface TemplateMap {
+    [keyof: string]: string[]
 }

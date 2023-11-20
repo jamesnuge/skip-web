@@ -30,7 +30,6 @@ export const NavBar = () => {
                 <NavDropdown title="Vehicle" id="vehicle-dropdown">
                     <NavDropdown.Item href="/vehicle/all">View all</NavDropdown.Item>
                     <NavDropdown.Item href="/vehicle/create">Add</NavDropdown.Item>
-                    {/* <NavDropdown.Item href="/vehicle/newCreate">New Add</NavDropdown.Item> */}
                 </NavDropdown>
                 <NavDropdown title="Chassis" id="chassis-dropdown">
                     <NavDropdown.Item href="/chassis/all">View all</NavDropdown.Item>
