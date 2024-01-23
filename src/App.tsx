@@ -13,7 +13,6 @@ import {ChassisSetupList} from './components/chassis/ChassisList';
 import {NewChassis} from './components/chassis/AddChassis';
 import {NavBar} from './components/navbar/NavBar';
 import { VehicleListDisplay } from './components/vehicle/VehicleListDisplay';
-import { AddVehicleMultiStageForm } from './components/vehicle/add/AddVehicleForm';
 import { VehicleDisplay } from './components/vehicle/display/VehicleDisplay';
 import { Homepage } from './components/HomePage';
 import { AddVehicleSinglePage } from './components/vehicle/add/SinglePageAddVehicle';

@@ -1,4 +1,5 @@
-import { Button, Col, Form, Modal, Row } from "react-bootstrap"
+import { useState } from "react";
+import { Button, Col, Container, Form, FormControl, FormGroup, Modal, Row } from "react-bootstrap"
 import { useForm } from "react-hook-form";
 
 export const AddCriteriaModal = ({ show, onHide, onSubmit }: any) => {
@@ -9,7 +10,8 @@ export const AddCriteriaModal = ({ show, onHide, onSubmit }: any) => {
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form>
+            <MySelectComponent availableFields={[]}/>
+            {/* <Form>
                 <Row>
                     <Col>
                         <Form.Check type={'checkbox'} label="Trackmeter"></Form.Check>
@@ -26,7 +28,7 @@ export const AddCriteriaModal = ({ show, onHide, onSubmit }: any) => {
                         <Form.Check type={'checkbox'} label="Location"></Form.Check>
                     </Col>
                 </Row>
-            </Form>
+            </Form> */}
         </Modal.Body>
         <Modal.Footer>
             <Button onClick={onHide}>
@@ -42,7 +44,7 @@ export const AddCriteriaModal = ({ show, onHide, onSubmit }: any) => {
 export const CriteriaModal = ({ show, onHide, onSubmit, details }: any) => {
     const { register, handleSubmit } = useForm();
     const submitClick = (value: any) => {
-        onSubmit(details.field, value);
+        onSubmit(details, value);
         onHide();
     };
     return <Modal show={show} onHide={onHide}>
@@ -66,3 +68,62 @@ export const CriteriaModal = ({ show, onHide, onSubmit, details }: any) => {
         </form>
     </Modal>
 }
+
+interface QueryField {
+    displayName: String,
+    field: String
+}
+
+interface SelectProps {
+    availableFields: QueryField[]
+}
+
+const MySelectComponent = ({availableFields}: SelectProps) => {
+  const allOptions = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry', 'Fig'];
+
+  const [filterText, setFilterText] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState(allOptions);
+
+  const handleFilterChange = (e: any) => {
+    const newText = e.target.value;
+    setFilterText(newText);
+
+    const filtered = allOptions.filter(option =>
+      option.toLowerCase().includes(newText.toLowerCase())
+    );
+    setFilteredOptions(filtered);
+  };
+
+  return (
+    <Container>
+      <Form>
+        <FormGroup>
+          <Col sm={12}>
+            <FormControl
+              type="text"
+              placeholder="Type to filter..."
+              value={filterText}
+              onChange={handleFilterChange}
+            />
+          </Col>
+        </FormGroup>
+        
+        <FormGroup>
+          <Col sm={6}>
+            <Form.Select>
+              {filteredOptions.map((option: any, index: any) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </Form.Select>
+          </Col>
+        </FormGroup>
+
+        <FormGroup>
+          <Col sm={6}>
+            <Button type="submit">Submit</Button>
+          </Col>
+        </FormGroup>
+      </Form>
+    </Container>
+  );
+};

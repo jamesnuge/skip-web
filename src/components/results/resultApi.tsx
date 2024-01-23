@@ -12,7 +12,10 @@ export const resultApi = {
         const response = await secureApi.get(`results/match?temperature=${temperature}&humidity=${humidity}&trackmeter=${trackmeter}&trackTemperature=${trackTemperature}`);
         return await response.json() as Result[]
     },
-    // TODO: Fix typing here
+    customQuery: async (criteria: any[]): Promise<Result[]> => {
+        const response = await secureApi.post(`results/customSearch`, criteria);
+        return await response.json() as Result[]
+    },
     save: async (result: any): Promise<Response> => {
         return await secureApi.put(`results/save`, result)
     },
