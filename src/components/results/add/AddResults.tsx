@@ -84,12 +84,8 @@ export const AddResult = () => {
     }, [watchVehicleId])
 
     const printResult = (value: any) => {
-        const valueWithAltitude = {
-            ...value,
-            location: JSON.parse(value.location),
-        }
-        console.log(valueWithAltitude)
-        resultApi.save(valueWithAltitude).then(() => {
+        console.log(value)
+        resultApi.save(value).then(() => {
             setErrorMessage(undefined);
             setSuccessMessage(`Successfully saved result`);
             push('/results')
@@ -147,10 +143,10 @@ export const AddResult = () => {
                                     </Col>
                                     <Col>
                                         <label htmlFor="location" className='text-start'>Location:</label>
-                                        <Form.Select id="location" aria-label="Default select example" {...register("location", { required: true })}>
+                                        <Form.Select id="location" aria-label="Default select example" {...register("locationId", { required: true })}>
                                             <option>Open this select menu</option>
                                             {locations.map((key: Location) => {
-                                                return <option key={key.name} value={JSON.stringify(key)}>{key.name}</option>
+                                                return <option key={key.name} value={key.id}>{key.name}</option>
                                             })}
                                         </Form.Select>
                                     </Col>

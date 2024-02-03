@@ -19,6 +19,13 @@ export const QueryContainer = styled(Stack)`
     padding: 0.5rem;
 `;
 
+export const FilterContainer = styled(Stack)`
+    border-bottom: 1px solid lightgrey;
+    padding: 0.5rem;
+`;
+
+export const FilterItem = styled.span``;
+
 export const QueryItem = styled.span`
 `;
 

@@ -21,8 +21,12 @@ export interface Result {
     trackTemperature: number,
     humidity: number,
     tuneupFile: string | undefined,
-    rank: number
+    rank: number,
+    extraFields: ExtraFieldDto
 }
+
+export type ExtraField = {field: string, displayName: string, value: any}
+export type ExtraFieldDto = {[id:string]: ExtraField}
 
 export const Dashboard = () => {
     const [data, setData] = useState<Result[]>([])

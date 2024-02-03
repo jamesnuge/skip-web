@@ -1,4 +1,4 @@
-import { Result } from './Results';
+import { ExtraField, ExtraFieldDto, Result } from './Results';
 import { Button, Modal, Row } from 'react-bootstrap';
 import { RaceRequest } from '../query/QueryRaceResults';
 import { useState } from 'react';
@@ -102,13 +102,14 @@ export const RaceResultListDisplay = ({results, request, refresh}: RaceResultLis
                     <th scope="col">Track Temp</th>
                     <th scope="col">Temperature</th>
                     <th scope="col">Humidity</th>
+                    {results.find(({extraFields}) => extraFields) && createExtraFieldHeaders(results[0]?.extraFields || [])}
                     <th scope="col">View Config</th>
                     {request && <th scope="col">Rank</th>}
                 </tr>
             </thead>
             <tbody>
                 {results.length !== 0 &&
-                    results.map(({ id, datetime, vehicle, tuneupFile, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank }) => <tr key={id}>
+                    results.map(({ id, datetime, vehicle, tuneupFile, sixSixtyFeetSpeed, quarterMileSpeed, sixtyFeetTime, threeThirtyFeetTime, sixSixtyFeetTime, quarterMileTime, location, trackTemperature, trackmeter, temperature, humidity, rank, extraFields }) => <tr key={id}>
                         {generateDateCell(datetime)}
                         <td className='text-start'>{location}</td>
                         <td className='text-start'>{vehicle}</td>
@@ -119,6 +120,7 @@ export const RaceResultListDisplay = ({results, request, refresh}: RaceResultLis
                         <td className='text-start'>{trackTemperature}°C {request && getDiffElement(trackTemperature, request.trackTemperature)}</td>
                         <td className='text-start'>{temperature}°C {request && getDiffElement(temperature, request.temperature)}</td>
                         <td className='text-start'>{humidity}% {request && getDiffElement(humidity, request.humidity)}</td>
+                        {extraFields && createExtraFieldsDisplay(extraFields)}
                         <td><FontAwesomeIcon icon={faGears} onClick={() => handleShow(id, vehicle, new Date(datetime).toDateString() + " " + new Date(datetime).toTimeString().slice(0, 8), location)}/></td>
                         {request && <td className='text-start'>{rank}</td>}
                     </tr>)
@@ -127,6 +129,34 @@ export const RaceResultListDisplay = ({results, request, refresh}: RaceResultLis
         </table>
     </Row>
 }
+
+const createExtraFieldHeaders = (extraFields: ExtraFieldDto) => {
+    const keys = Object.keys(extraFields);
+    if (keys.length !== 0) {
+        return <>
+            {keys.map((fieldName) => <th scope="col">{extraFields[fieldName].displayName}</th>)}
+        </>
+    } else {
+        return <></>
+    }
+
+}
+
+const mapField = ({value}: ExtraField) => {
+    return <td className='text-start'>{value}</td>
+}
+
+const createExtraFieldsDisplay = (extraFields: ExtraFieldDto) => {
+    const keys = Object.keys(extraFields);
+    if (keys.length !== 0) {
+        return <>
+            {keys.map((field) => mapField(extraFields[field]))}
+        </>
+    } else {
+        return <></>
+    }
+}
+
 
 const generateDateCell = (val: string) => {
     const date = new Date(val)
